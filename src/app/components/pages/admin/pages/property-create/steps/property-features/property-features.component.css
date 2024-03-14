@@ -1,0 +1,16 @@
+.additional-details {
+    font-size: 1.3rem;
+}
+
+.label-toggle {
+    justify-content: space-between;
+    align-items: center;
+    padding: .5rem 0;
+}.label-toggle label {
+    font-size: 1.2rem;
+    margin: 0;
+}
+
+.description {
+    padding: .5rem 0;
+}

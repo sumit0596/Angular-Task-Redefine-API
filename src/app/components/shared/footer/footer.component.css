@@ -1,0 +1,38 @@
+.footer-section {
+    background: #1A4AB9;
+    color: #fff;
+    padding: 6.2rem 3rem;
+}
+
+h1.title {
+    font-size: 1.7rem;
+    margin-bottom: 1.5rem;
+}
+
+
+h3.menu-heading {
+    font-size: 1.7rem;
+    font-weight: bold;
+}
+
+.footer-section ul{
+    padding: 0;
+}
+
+.footer-section li{
+    list-style: none;
+    margin-bottom: 1rem;
+}
+
+.footer-section li a{
+    color: #fff;
+    text-decoration: none;
+    font-size: .9rem;
+    font-weight: 500;
+}
+
+@media only screen and (max-width: 678px){
+    .footer-section {
+        padding: 1.5rem;
+    }
+}

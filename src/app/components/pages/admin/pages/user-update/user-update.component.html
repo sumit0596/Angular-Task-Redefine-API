@@ -1,0 +1,163 @@
+<div class="row card p-4">
+    <div class="col-md-12">
+        <div class="header-section">
+            <h1 class="admin-title">Update User</h1>
+            <hr>
+        </div>
+    </div>
+    <div class="col-md-12 mt-3">
+        <form [formGroup]="updateForm" class="carete-user-form" (ngSubmit)="updateUser()">
+            <div class="row">
+                <div class="col-md-6 col-12">
+                    <div class="mb-3">
+                        <label class="form-label">First Name</label>
+                        <input type="text" class="form-control" formControlName="FirstName" id="firstName">
+                        <div *ngIf="updateForm.get('FirstName')?.invalid && updateForm.get('FirstName')?.touched"
+                            class="form-text text-danger">Please enter First Name</div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-12">
+                    <div class="mb-3">
+                        <label class="form-label">Last Name</label>
+                        <input type="text" class="form-control" formControlName="LastName" id="lastName">
+                        <div *ngIf="updateForm.get('LastName')?.invalid && updateForm.get('LastName')?.touched"
+                            class="form-text text-danger">Please enter Last Name</div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-12">
+                    <div class="mb-3">
+                        <label class="form-label">Email address</label>
+                        <input type="email" class="form-control" formControlName="Email" id="exampleInputEmail1">
+                        <div *ngIf="updateForm.get('Email')?.invalid && updateForm.get('Email')?.touched"
+                            class="form-text text-danger">Please enter Email</div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-12">
+                    <div class="mb-3">
+                        <label class="form-label">Cell Number</label>
+                        <input type="number" class="form-control" formControlName="CellNumber" id="cellNo">
+                        <div *ngIf="updateForm.get('CellNumber')?.invalid && updateForm.get('CellNumber')?.touched"
+                            class="form-text text-danger">Please enter Phone No</div>
+                    </div>
+                </div>
+
+                <div class="col-md-12 col-12">
+                    <div class="mb-3">
+                        <label class="form-label">Role</label>
+                        <select class="form-select" aria-label="Default select example" formControlName="RoleId" (change)="toggleOptionValue()">
+                            <option selected>Open this select menu</option>
+                            <option value="1">Super Admin</option>
+                            <option value="2">Broker</option>
+                            <option value="3">Broker Leasion</option>
+                            <option value="4">Leasing Contact</option>
+                        </select>
+                        <div *ngIf="updateForm.get('RoleId')?.invalid && updateForm.get('RoleId')?.touched"
+                            class="form-text text-danger">Please select Role</div>
+                    </div>
+                </div>
+
+
+            </div>
+
+            <div class="broker-expanded row" *ngIf="showBrokerExpanded">    
+                <div class="col-md-6 col-12">
+                    <div class="mb-3">
+                        <label class="form-label">Company Name</label>
+                        <input type="text" class="form-control" formControlName="CompanyName" id="cellNo">
+                        <div *ngIf="updateForm.get('CompanyName')?.invalid && updateForm.get('CompanyName')?.touched"
+                            class="form-text text-danger">Please enter Company Name</div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-12">
+                    <div class="mb-3">
+                        <label class="form-label">Office Number</label>
+                        <input type="number" class="form-control" formControlName="OfficeNumber" id="cellNo">
+                        <div *ngIf="updateForm.get('OfficeNumber')?.invalid && updateForm.get('OfficeNumber')?.touched"
+                            class="form-text text-danger">Please enter Office Number</div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-12">
+                    <div class="mb-3">
+                        <label class="form-label">Date of Birth</label>
+                        <!-- <input type="date" class="form-control" formControlName="Dob" id="cellNo"
+                            (change)="formatDate($event)"> -->
+
+                            <div class="d-block">
+                                <mat-form-field>
+                                    <input matInput 
+                                    [matDatepicker]="picker" 
+                                    [formControl]="selectedDate" 
+                                    (dateChange)="datePick($event)">
+                                    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                                    <mat-datepicker #picker></mat-datepicker>
+                                </mat-form-field>
+                                
+                            </div>
+                          
+
+                        <div *ngIf="updateForm.get('Dob')?.invalid && updateForm.get('Dob')?.touched"
+                            class="form-text text-danger">Please enter Date of Birth</div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-12">
+                    <div class="mb-3">
+                        <label class="form-label">Sector</label>
+                        <ng-select [(ngModel)]="sectorsSelect" [multiple]="true" (change)="itemSelected($event)" 
+                            formControlName="Sector">
+                            <ng-option *ngFor="let sv of sectors" [value]="sv.Id">{{sv.Name}}</ng-option>
+                        </ng-select>
+                        <div *ngIf="updateForm.get('Sector')?.invalid && updateForm.get('Sector')?.touched"
+                            class="form-text text-danger">Please select Sector</div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-12">
+                    <div class="mb-3">
+                        <label class="form-label">Area</label>
+                        <ng-select [(ngModel)]="areasSelect" [multiple]="true" (change)="itemSelected($event)"
+                            formControlName="Areas">
+                            <ng-option *ngFor="let av of areas" [value]="av.Id">{{av.Name}}</ng-option>
+                        </ng-select>
+                        <div *ngIf="updateForm.get('Areas')?.invalid && updateForm.get('Areas')?.touched"
+                            class="form-text text-danger">Please select Area</div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-12">
+                    <div class="mb-3">
+                        <label class="form-label">Personal Interest</label>
+                        <ng-select [(ngModel)]="psInterestSelect" [multiple]="true" (change)="itemSelected($event)"
+                            formControlName="PersonalInterest">
+                            <ng-option *ngFor="let pi of psInterest" [value]="pi.Id">{{pi.Name}}</ng-option>
+                        </ng-select>
+                        <div *ngIf="updateForm.get('PersonalInterest')?.invalid && updateForm.get('PersonalInterest')?.touched"
+                            class="form-text text-danger">Please select Personal Interest</div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-12">
+                    <div class="mb-3">
+                        <label class="form-label">Subscription Preferences</label>
+                        <ng-select [(ngModel)]="subscriptionSelect" [multiple]="true" (change)="itemSelected($event)"
+                            formControlName="SubscriptionPreferences">
+                            <ng-option *ngFor="let sbs of subscription" [value]="sbs.Id">{{sbs.Name}}</ng-option>
+                        </ng-select>
+                        <div *ngIf="updateForm.get('SubscriptionPreferences')?.invalid && updateForm.get('SubscriptionPreferences')?.touched"
+                            class="form-text text-danger">Please select Subscription Preferences</div>
+                    </div>
+                </div>
+            </div>
+            <div class="row justify-content-md-end">
+                <div class="col-md-4 col-12">
+                    <button type="submit" class="btn btn-primary">Update</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

@@ -1,0 +1,17 @@
+nav {
+    /* border: 1px solid #e3e3e4; */
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+}
+.nav-link{
+    cursor: pointer;
+    color: #000;
+}
+
+.nav-link.active {
+    background-color: transparent !important;
+    color: #1a4ab9 !important;
+    font-weight: 500;
+    border-bottom: 2px solid #1a4ab9;
+    border-radius: 0;
+}

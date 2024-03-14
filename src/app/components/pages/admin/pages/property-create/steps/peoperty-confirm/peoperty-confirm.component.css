@@ -1,0 +1,42 @@
+ul.list-details {
+    list-style-type: none;
+    padding: 0;
+    gap: 0.9rem;
+    flex-wrap: wrap;
+    margin-bottom: 0;
+}
+
+ul.list-details li{
+    font-size: 0.9rem;
+}
+
+.small-title {
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.files {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.files i {
+    font-size: 2rem;
+    color: red;
+}
+
+.icon i {
+    font-size: 2.5rem;
+}
+.contact-title{
+    font-size: .9rem;
+    color: #7d7d7d;
+}
+.col-md-4.col-12 img.img-fluid {
+    height: 170px;
+}
+
+.col-md-8.col-12 img.img-fluid {
+    height: 341px;
+}

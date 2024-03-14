@@ -1,0 +1,37 @@
+.login-section {
+    background: #eef2f5;
+}
+
+.card {
+    padding: 2.5rem;
+    border: none;
+}
+
+h1.title {
+    text-align: center;
+    font-size: 1.9rem;
+}
+
+label.form-label {
+    font-size: 1.1rem;
+    font-weight: bold;
+}
+
+
+.login-btn{
+    display: flex;
+    justify-content: center;
+    padding: 1rem 2rem;
+}
+
+button.forgot-pass-btn {
+    color: #1a4ab9;;
+    background: transparent;
+    border: none;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    font-weight: 500;
+}
+

@@ -1,0 +1,30 @@
+<div class="login-section">
+    <div class="container p-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card">
+                    <h1 class="title">Hello, Login here👋</h1>
+                    <form [formGroup]="loginForm" class="" (ngSubmit)="loginUser()">
+                        <div class="my-4">
+                            <label for="exampleInputEmail1" class="form-label">Email address</label>
+                            <input type="Email" class="form-control" formControlName="Email">
+                            <div *ngIf="loginForm.get('Email')?.invalid && loginForm.get('Email')?.touched" class="form-text text-danger">Please enter valid input</div>
+                        </div>
+                        <div class="my-4">
+                            <label for="exampleInputPassword1" class="form-label">Password</label>
+                            <input type="Password" class="form-control" formControlName="Password">
+                            <div *ngIf="loginForm.get('Password')?.invalid && loginForm.get('Email')?.touched" class="form-text text-danger">Please enter valid password</div>
+                        </div>
+                       
+                        <div class="login-btn">
+                            <button type="submit" class="btn btn-primary">Login</button>
+                        </div>
+                    </form>
+                    <div class="forgot-pass-btn">
+                        <button routerLink="/forgot-password" type="submit" class="forgot-pass-btn">Forgot Password</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

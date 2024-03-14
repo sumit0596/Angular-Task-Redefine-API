@@ -1,0 +1,36 @@
+<div class="row card m-2 p-3 mt-4">
+    <div class="header-section">
+        <h1 class="admin-title">Property Contacts</h1>
+    </div>
+    <hr>
+    <form [formGroup]="propertyContact" (ngSubmit)="updateContacts()">
+        <div class="col-md-12">
+            <div class="row">
+                <h1 class="section-title">Contact Details</h1>
+            </div>
+            <div class="row">
+                <div class="mb-3">
+                    <label class="form-label">Leasing Contact<span class="text-danger mx-2">*</span></label>
+                    <ng-select [(ngModel)]="leasingSelect" [clearable]="false" (change)="itemSelected($event)"
+                        formControlName="LeasingExecutiveId">
+                        <ng-option *ngFor="let lcn of leasingContactList"
+                            [value]="lcn.Id">{{lcn.Name}}</ng-option>
+                    </ng-select>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Broker Liaison<span class="text-danger mx-2">*</span></label>
+                    <ng-select [(ngModel)]="brokerSelect" [clearable]="false" (change)="itemSelected($event)"
+                    formControlName="BrokerLiaisonId">
+                    <ng-option *ngFor="let bl of brokerLiaisonList"
+                        [value]="bl.Id">{{bl.Name}}</ng-option>
+                </ng-select>
+                </div>
+            </div>
+            <div class="row justify-content-md-end my-4">
+                <div class="col-md-3 col-12">
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>

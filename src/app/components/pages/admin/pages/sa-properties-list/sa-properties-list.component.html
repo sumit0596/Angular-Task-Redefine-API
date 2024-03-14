@@ -1,0 +1,116 @@
+<div class="row justify-content-md-end mb-4">
+  <div class="col-md-2 col-12 p-0">
+    <button class="btn btn-primary create-property" data-bs-toggle="modal" data-bs-target="#createNewProperty">Create
+      New Property</button>
+  </div>
+</div>
+<div class="row card">
+  <div class="col-md-12 mt-4">
+    <div class="header-section">
+      <h1 class="admin-title">South African Properties</h1>
+      <div class=" d-flex align-items-center gap-3">
+        <div class="filter-section">
+          <button class="filterBtn" data-bs-toggle="modal" data-bs-target="#filterSection"><i
+              class="bi bi-funnel-fill"></i></button>
+        </div>
+        <div class="download-section">
+          <button class="downloadBtn" (click)="exportData()"><i class="bi bi-box-arrow-in-right"></i></button>
+        </div>
+        <div class="action-section input-group search-section">
+          <form [formGroup]="searchForm" (ngSubmit)="searchUser()">
+            <input type="text" formControlName="Search" class="form-control" placeholder="Enter Keyword">
+            <button class="clearbtn" (click)="onClearSearch()" *ngIf="searchClear"><i class="bi bi-x"></i></button>
+            <button class="btn btn-outline-secondary search" type="submit"><i class="bi bi-search"></i></button>
+          </form>
+        </div>
+      </div>
+    </div>
+    <hr>
+  </div>
+  <div class="col-md-12">
+    <table class="table table-striped properties-table">
+      <thead class="mb-3">
+        <th>Property Code</th>
+        <th>Name</th>
+        <th>Sector</th>
+        <th style="width: 20%;">Address</th>
+        <th>Featured</th>
+        <th>Status</th>
+        <th>Actions</th>
+      </thead>
+      <tbody>
+        <tr
+          *ngFor="let pl of propertyList | paginate: { itemsPerPage: propertyfilter.PerPage, currentPage: PageNo, totalItems: totalItem }">
+          <td>{{pl.BuildingCode}}</td>
+          <td>{{pl.PropertyName}}</td>
+          <td>{{pl.SectorName}}</td>
+          <td>{{pl.Address}}</td>
+          <td>{{pl.IsFeatured}}</td>
+          <td class="status"><span>{{pl.PropertyStatus}}</span></td>
+          <td class="dropdown">
+            <i class="bi bi-three-dots-vertical dropdown-toggle" data-bs-toggle="dropdown"></i>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" (click)="editSection(pl.PropertyId); false" href="">Edit</a></li>
+              <li><a class="dropdown-item" (click)="viewSection(pl.PropertyId, 'selectView'); false"  href="#">View</a></li>
+            </ul>
+          </td>
+        </tr>
+
+      </tbody>
+    </table>
+  </div>
+  <div class="col-md-12 pegination">
+    <pagination-controls [autoHide]="true" (pageChange)="onPageChange($event)"></pagination-controls>
+  </div>
+</div>
+
+<!-- Filter Modal -->
+<div class="modal fade" id="filterSection" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Filter</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form [formGroup]="filterForm" (ngSubmit)="filterSection()">
+        <div class="modal-body">
+          <ng-select [(ngModel)]="sectorSelect" [multiple]="true" (change)="itemSelected($event)"
+            formControlName="RoleId">
+            <ng-option *ngFor="let sectorNames of sectorList" [value]="sectorNames.Id">{{sectorNames.Name}}</ng-option>
+          </ng-select>
+
+        </div>
+        <div class="modal-footer modal-footer-btn">
+          <button type="button" class="btn btn-secondary clearbtn" (click)="clearSectorSelect()"
+            data-bs-dismiss="modal">Clear</button>
+          <button type="submit" class="btn btn-primary" data-bs-dismiss="modal">Save changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Create Property Modal -->
+<div class="modal fade" id="createNewProperty" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">MDA Property Code</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form [formGroup]="mdaForm" (ngSubmit)="checkMda()">
+        <div class="modal-body">
+          <div class="mb-3">
+            <label class="form-label">Enter Property Code</label>
+            <input formControlName="BuildingCode" type="number" class="form-control">
+            <div *ngIf="errorMessage" class="form-text text-danger">{{errorMessage}}</div>
+          </div>
+        </div>
+        <div class="modal-footer modal-footer-btn">
+          <button #closeButton type="button" class="btn btn-secondary clearbtn" data-bs-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

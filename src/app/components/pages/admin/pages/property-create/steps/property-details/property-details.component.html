@@ -1,0 +1,236 @@
+<div class="row card m-2 p-3 mt-4">
+    <div class="header-section">
+        <h1 class="admin-title">Property Details</h1>
+    </div>
+    <hr>
+    <form [formGroup]="propertyDetailsForm">
+        <div class="col-md-12">
+            <div class="row">
+                <h1 class="section-title">Property Details</h1>
+                <div class="col-md-6 col-12 mb-3">
+                    <label class="form-label">Property Code</label>
+                    <input type="text" class="form-control" formControlName="BuildingCode"
+                        [attr.disabled]="propertyDetailsForm.get('BuildingCode')?.value != ''">
+                </div>
+                <div class="col-md-6 col-12 mb-3">
+                    <label class="form-label">Property Name<span class="text-danger mx-2">*</span></label>
+                    <input type="text" class="form-control" formControlName="PropertyName">
+                    <div class="text-danger"
+                        *ngIf="propertyDetailsForm.get('PropertyName')?.invalid && propertyDetailsForm.get('PropertyName')?.touched">
+                        Please enter Property Name</div>
+                </div>
+                <div class="col-md-6 col-12 mb-3">
+                    <label class="form-label">Sector</label>
+                    <ng-select [(ngModel)]="sectorSelect" [clearable]="false" (change)="itemSelected($event)"
+                        formControlName="SectorId" [readonly]="sectorSelect">
+                        <ng-option *ngFor="let sectorNames of sectorList"
+                            [value]="sectorNames.Id">{{sectorNames.Name}}</ng-option>
+                    </ng-select>
+                </div>
+                <div class="col-md-6 col-12 mb-3">
+                    <label class="form-label">Grade</label>
+                    <input type="text" class="form-control" formControlName="Grade"
+                        [attr.disabled]="propertyDetailsForm.get('Grade')?.value != ''">
+                </div>
+                <div class="col-md-6 col-12 mb-3">
+                    <label class="form-label">GLA<span class="text-danger mx-2">*</span></label>
+                    <input type="text" class="form-control" formControlName="Gla"
+                        [attr.disabled]="propertyDetailsForm.get('Gla')?.value != ''">
+
+                    <div class="text-danger"
+                        *ngIf="propertyDetailsForm.get('Gla')?.touched && propertyDetailsForm.get('Gla')?.errors">
+                        <div *ngIf="propertyDetailsForm.get('Gla')?.hasError('required')">
+                            Please enter GLA
+                        </div>
+                        <div *ngIf="propertyDetailsForm.get('Gla')?.hasError('pattern')">
+                            Please enter Numeric
+                        </div>
+                    </div>
+
+                </div>
+                <div class="col-md-12 col-12 mb-3">
+                    <label class="form-label">Website URL</label>
+                    <input type="text" class="form-control" formControlName="WebsiteUrl">
+                </div>
+                <div class="col-md-12 col-12 mb-3">
+                    <label class="form-label">Property Description</label>
+                    <angular-editor formControlName="PropertyDescription" [config]="editorConfig"></angular-editor>
+                </div>
+                <hr class="mt-3 mb-3">
+            </div>
+
+            <div class="row">
+                <h1 class="section-title">Location Details</h1>
+                <div class="col-md-6 col-12 mb-3">
+                    <label class="form-label">Longitude<span class="text-danger mx-2">*</span></label>
+                    <input type="text" class="form-control" formControlName="Latitude">
+
+                    <div class="text-danger"
+                        *ngIf="propertyDetailsForm.get('Latitude')?.touched && propertyDetailsForm.get('Latitude')?.errors">
+                        <div *ngIf="propertyDetailsForm.get('Latitude')?.hasError('required')">
+                            Please enter Latitude
+                        </div>
+                        <div *ngIf="propertyDetailsForm.get('Latitude')?.hasError('pattern')">
+                            Please enter Numeric
+                        </div>
+                    </div>
+
+                </div>
+                <div class="col-md-6 col-12 mb-3">
+                    <label class="form-label">Latitude<span class="text-danger mx-2">*</span></label>
+                    <input type="text" class="form-control" formControlName="Longitude">
+
+                    <div class="text-danger"
+                        *ngIf="propertyDetailsForm.get('Longitude')?.touched && propertyDetailsForm.get('Longitude')?.errors">
+                        <div *ngIf="propertyDetailsForm.get('Longitude')?.hasError('required')">
+                            Please enter Longitude
+                        </div>
+                        <div *ngIf="propertyDetailsForm.get('Longitude')?.hasError('pattern')">
+                            Please enter Numeric
+                        </div>
+                    </div>
+
+                </div>
+                <div class="col-md-12 col-12 mb-3">
+                    <label class="form-label">Address<span class="text-danger mx-2">*</span></label>
+                    <input type="text" class="form-control" formControlName="Address">
+                    <div class="text-danger"
+                        *ngIf="propertyDetailsForm.get('Address')?.invalid && propertyDetailsForm.get('Address')?.touched">
+                        Please enter Address</div>
+                </div>
+                <div class="col-md-6 col-12 mb-3">
+                    <label class="form-label">Suburb<span class="text-danger mx-2">*</span></label>
+                    <input type="text" class="form-control" formControlName="Suburb"
+                        [attr.disabled]="propertyDetailsForm.get('Suburb')?.value != ''">
+                    <div class="text-danger"
+                        *ngIf="propertyDetailsForm.get('Suburb')?.invalid && propertyDetailsForm.get('Suburb')?.touched">
+                        Please enter Suburb</div>
+                </div>
+                <div class="col-md-6 col-12 mb-3">
+                    <label class="form-label">City<span class="text-danger mx-2">*</span></label>
+                    <input type="text" class="form-control" formControlName="City"
+                        [attr.disabled]="propertyDetailsForm.get('City')?.value != ''">
+                    <div class="text-danger"
+                        *ngIf="propertyDetailsForm.get('City')?.invalid && propertyDetailsForm.get('City')?.touched">
+                        Please enter City</div>
+                </div>
+                <div class="col-md-6 col-12 mb-3">
+                    <label class="form-label">Province<span class="text-danger mx-2">*</span></label>
+                    <ng-select [(ngModel)]="provinceSelect" [clearable]="false" (change)="itemSelected($event)"
+                        formControlName="Province" [readonly]="provinceSelect">
+                        <ng-option *ngFor="let provinceNames of provinceList"
+                            [value]="provinceNames.Id">{{provinceNames.Name}}</ng-option>
+                    </ng-select>
+
+                </div>
+                <div class="col-md-6 col-12 mb-3">
+                    <label class="form-label">Country<span class="text-danger mx-2">*</span></label>
+                    <input type="text" class="form-control" formControlName="Country"
+                        [attr.disabled]="propertyDetailsForm.get('Country')?.value == ''">
+                    <div class="text-danger"
+                        *ngIf="propertyDetailsForm.get('Country')?.invalid && propertyDetailsForm.get('Country')?.touched">
+                        Please enter Country</div>
+                </div>
+                <div class="col-md-6 col-12 mb-3">
+                    <label class="form-label">Postal Code<span class="text-danger mx-2">*</span></label>
+                    <input type="text" class="form-control" formControlName="PostCode">
+                </div>
+
+                <div class="text-danger"
+                    *ngIf="propertyDetailsForm.get('PostCode')?.touched && propertyDetailsForm.get('PostCode')?.errors">
+                    <div *ngIf="propertyDetailsForm.get('PostCode')?.hasError('required')">
+                        Please enter PostCode
+                    </div>
+                    <div *ngIf="propertyDetailsForm.get('PostCode')?.hasError('pattern')">
+                        Please enter Numeric
+                    </div>
+                </div>
+
+                <hr class="mt-3 mb-3">
+            </div>
+            <div class="row">
+                <h1 class="section-title">Parking Details</h1>
+                <div class="col-md-12 col-12 mb-3">
+                    <label class="form-label">Parking Ratio (bays/100 sqm)</label>
+                    <input type="text" class="form-control" formControlName="ParkingRatio">
+                </div>
+                <div class="col-md-4 col-12 mb-3">
+                    <div class="label-container d-flex justify-content-between">
+                        <label class="form-label">Basement bays (R/sqm)</label>
+                        <mat-slide-toggle class="example-margin" [color]="color" [checked]="basementChecked"
+                            (change)="buttonToggle($event, 'basementChecked')">
+                        </mat-slide-toggle>
+                    </div>
+
+                    <input type="text" class="form-control" formControlName="BasementBays">
+                </div>
+                <div class="col-md-4 col-12 mb-3">
+                    <div class="label-container d-flex justify-content-between">
+                        <label class="form-label">Shaded bays (R/sqm)</label>
+                        <mat-slide-toggle class="example-margin" [color]="color" [checked]="shadedChecked"
+                            (change)="buttonToggle($event, 'shadedChecked')"></mat-slide-toggle>
+                    </div>
+                    <input type="text" class="form-control" formControlName="ShadedBays">
+                </div>
+                <div class="col-md-4 col-12 mb-3">
+                    <div class="label-container d-flex justify-content-between">
+                        <label class="form-label">Open Bays (R/sqm)</label>
+                        <mat-slide-toggle class="example-margin" [color]="color" [checked]="openBaysChecked"
+                            (change)="buttonToggle($event,'openBaysChecked' )"></mat-slide-toggle>
+                    </div>
+                    <input type="text" class="form-control" formControlName="OpenBays">
+                </div>
+                <hr class="mt-3 mb-3">
+            </div>
+
+            <div class="row">
+                <h1 class="section-title">Annual Foot Count</h1>
+                <div class="col-md-12 col-12 mb-3">
+                    <label class="form-label">Foot Count</label>
+                    <input type="text" class="form-control" formControlName="AnnualFootCount">
+                </div>
+                <hr class="mt-3 mb-3">
+            </div>
+
+            <div class="row">
+                <h1 class="section-title">Anchor Tenants</h1>
+                <div class="col-md-12 col-12 mb-3">
+                    <label class="form-label">Name of Anchor Tenants</label>
+                    <input type="text" class="form-control" formControlName="AnchorTenant">
+                </div>
+                <hr class="mt-3 mb-3">
+            </div>
+
+            <div class="row">
+                <h1 class="section-title">Total Tenants</h1>
+                <div class="col-md-12 col-12 mb-3">
+                    <label class="form-label">Amount of Tenants</label>
+                    <input type="text" class="form-control" formControlName="TotalTenants">
+                </div>
+                <hr class="mt-3 mb-3">
+            </div>
+
+            <div class="row">
+                <h1 class="section-title">Property Attributes</h1>
+                <div class="col-md-12 col-12 mb-3">
+                    <label class="form-label">Property Attributes</label>
+                    <!-- <input type="text" class="form-control" formControlName="PropertyAttributes"> -->
+                    <ng-select [(ngModel)]="atributesSelect" [multiple]="true" [clearable]="true" (change)="itemSelected($event)"
+                        formControlName="PropertyAttributes">
+                        <ng-option *ngFor="let attributesName of attributes;"
+                            [value]="attributesName.Id">{{attributesName.Title}}</ng-option>
+                    </ng-select>
+                </div>
+                <hr class="mt-3 mb-3">
+            </div>
+
+            <div class="row justify-content-md-end my-4">
+                <div class="col-md-3 col-12">
+                    <button type="submit" class="btn btn-primary" *ngIf="propertyDetailsSt !== 'success'" (click)="getFormData()">Save</button>
+                    <button type="submit" class="btn btn-primary" (click)="updateFormData()"
+                        *ngIf="propertyDetailsSt === 'success'">Update</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>

@@ -1,0 +1,177 @@
+<div class="row card m-2 p-3 mt-4">
+    <div class="header-section">
+        <h1 class="admin-title">ESG Building Certification</h1>
+    </div>
+    <hr>
+    <form [formGroup]="esgForm" (ngSubmit)="esgSubmit()">
+        <div class="col-md-12">
+            <div class="row">
+                <div *ngFor="let fl of htmlFields; index as i;">
+
+                    <div class="d-flex gap-2 label-toggle">
+                        <label class="form-label">{{fl.name}}</label>
+                        <mat-slide-toggle (change)="toggleDiv($event.checked,i)"
+                            [checked]="dynamicFieldStates[i]"></mat-slide-toggle>
+                    </div>
+
+                    <div class="border has-sub-menus" *ngIf="dynamicFieldStates[i]">
+                        <ng-container *ngFor="let sfl of fl.features; index as j;">
+
+                            <div class="d-flex gap-2 label-toggle">
+                                <label class="form-label">{{sfl.Name}}</label>
+                                <mat-slide-toggle (change)="toggleSubDiv($event.checked,sfl.EsgFeaturesId -1)"
+                                    [checked]="subFields[sfl.EsgFeaturesId -1]"></mat-slide-toggle>
+                            </div>
+
+                            <div class="files-input" *ngIf="subFields[sfl.EsgFeaturesId -1]">
+                                <div class="px-3 mb-3" formArrayName="Rating">
+                                    <ng-container *ngIf="i === 0">
+                                        <label *ngIf="j === 0" class="form-label">Rating scale: 1-6</label>
+                                        <label *ngIf="j !== 0" class="form-label">Rating scale: 4-6</label>
+                                        <ng-container>
+                                            <ng-select [clearable]="false" formControlName="{{sfl.EsgFeaturesId -1}}">
+                                                <ng-option *ngFor="let rt of ratings"
+                                                    [value]="rt.name">{{rt.name}}</ng-option>
+                                            </ng-select>
+                                        </ng-container>
+                                    </ng-container>
+                                    <ng-container *ngIf="i === 1">
+                                        <label class="form-label">Select level: 1 - 5</label>
+                                        <ng-container>
+                                            <ng-select [clearable]="false" formControlName="{{sfl.EsgFeaturesId -1}}">
+                                                <ng-option *ngFor="let rt of levels"
+                                                    [value]="rt.name">{{rt.name}}</ng-option>
+                                            </ng-select>
+                                        </ng-container>
+                                    </ng-container>
+                                    <ng-container *ngIf="i === 2">
+                                        <label class="form-label">Select level: 2 - 5</label>
+                                        <ng-container>
+                                            <ng-select [clearable]="false" formControlName="{{sfl.EsgFeaturesId -1}}">
+                                                <ng-option *ngFor="let rt of levels"
+                                                    [value]="rt.name">{{rt.name}}</ng-option>
+                                            </ng-select>
+                                        </ng-container>
+                                    </ng-container>
+                                    <ng-container *ngIf="i === 3">
+                                        <label class="form-label">EPC Rating (A-G)</label>
+                                        <ng-container>
+                                            <ng-select [clearable]="false" formControlName="{{sfl.EsgFeaturesId -1}}">
+                                                <ng-option *ngFor="let rt of epcRating"
+                                                    [value]="rt.name">{{rt.name}}</ng-option>
+                                            </ng-select>
+                                        </ng-container>
+                                    </ng-container>
+
+                                    <ng-container *ngIf="i === 4">
+                                        <ng-container>
+                                            <ng-select [clearable]="false" formControlName="{{sfl.EsgFeaturesId -1}}">
+                                                <ng-option *ngFor="let rt of ratings"
+                                                    [value]="rt.name">{{rt.name}}</ng-option>
+                                            </ng-select>
+                                        </ng-container>
+                                    </ng-container>
+
+                                </div>
+
+                                <div class="px-3" *ngIf="i === 1 || i === 2">
+                                    <div class="lavel-type mb-3" formArrayName="LevelType">
+                                        <label class="form-label">Level Type</label>
+                                        <!-- <input formControlName="{{sfl.EsgFeaturesId -1}}" type="text" class="form-control"> -->
+                                        <ng-container>
+                                            <ng-select [clearable]="false" formControlName="{{sfl.EsgFeaturesId -1}}">
+                                                <ng-option *ngFor="let rt of levelsType"
+                                                    [value]="rt.name">{{rt.name}}</ng-option>
+                                            </ng-select>
+                                        </ng-container>
+                                    </div>
+
+                                    <div class="offsetPercentage mb-3" formArrayName="OffsetPercentage">
+                                        <label class="form-label">Offset Percentage</label>
+                                        <input formControlName="{{sfl.EsgFeaturesId -1}}" type="text"
+                                            class="form-control">
+                                    </div>
+
+                                    <div class="d-flex gap-3 mb-3">
+                                        <div class="validStartDate w-100" formArrayName="ValidityStartDate">
+                                            <label class="form-label">Validity Start Date</label>
+                                            <!-- <input formControlName="{{sfl.EsgFeaturesId -1}}" type="text" class="form-control"> -->
+                                            <div class="d-block">
+                                                <mat-form-field>
+                                                    <input matInput [matDatepicker]="startPicker"
+                                                        formControlName="{{sfl.EsgFeaturesId -1}}"
+                                                        (dateChange)="startDatePick($event, sfl.EsgFeaturesId -1)">
+                                                    <mat-datepicker-toggle matSuffix
+                                                        [for]="startPicker"></mat-datepicker-toggle>
+                                                    <mat-datepicker #startPicker></mat-datepicker>
+                                                </mat-form-field>
+
+                                            </div>
+                                        </div>
+
+                                        <div class="validEndDate w-100 mb-3" formArrayName="ValidityEndDate">
+                                            <label class="form-label">Validity End Date</label>
+                                            <!-- <input formControlName="{{sfl.EsgFeaturesId -1}}" type="text" class="form-control"> -->
+                                            <div class="d-block">
+                                                <mat-form-field>
+                                                    <input matInput [matDatepicker]="endPicker"
+                                                        formControlName="{{sfl.EsgFeaturesId -1}}"
+                                                        (dateChange)="endDatePick($event, sfl.EsgFeaturesId -1)">
+                                                    <mat-datepicker-toggle matSuffix
+                                                        [for]="endPicker"></mat-datepicker-toggle>
+                                                    <mat-datepicker #endPicker></mat-datepicker>
+                                                </mat-form-field>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="px-3" *ngIf="i === 3">
+                                    <div class="offsetPercentage mb-3" formArrayName="AdditionalInformation">
+                                        <label class="form-label">Additional Information</label>
+                                        <input formControlName="{{sfl.EsgFeaturesId -1}}" type="text"
+                                            class="form-control">
+                                    </div>
+
+                                </div>
+
+
+
+                                <div class="px-3">
+                                    <label class="form-label">Upload Certificate</label>
+                                    <ngx-file-drop dropZoneLabel="Drop files here"
+                                        (onFileDrop)="dropped($event, sfl.EsgFeaturesId -1, 'Image')" [multiple]="false"
+                                        (onFileOver)="fileOver($event)" (onFileLeave)="fileLeave($event)" accept=".pdf">
+                                        <ng-template ngx-file-drop-content-tmp let-openFileSelector="openFileSelector">
+                                            <button type="button" (click)="openFileSelector()">Drop or Browser
+                                                Files</button>
+                                        </ng-template>
+                                    </ngx-file-drop>
+
+                                    <div class="upload-table col-12 border-top border-bottom mt-3 py-3">
+                                        <div class="attach-file"
+                                            *ngFor="let item of fileArrays[sfl.EsgFeaturesId -1]; let i=index">
+
+                                            <i class="bi bi-file-earmark-pdf"></i>
+                                            <strong>{{ item.relativePath}}</strong>
+                                            <strong>{{item}}</strong>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                        </ng-container>
+                    </div>
+                </div>
+                <div class="row justify-content-md-end my-4">
+                    <div class="col-md-3 col-12">
+                        <button type="submit" class="btn btn-primary">Save</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </form>
+</div>

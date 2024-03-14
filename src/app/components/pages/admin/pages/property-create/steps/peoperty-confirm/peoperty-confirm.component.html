@@ -1,0 +1,270 @@
+<div class="row card m-2 p-3 mt-4">
+    <div class="header-section">
+        <h1 class="admin-title">{{getDetailsData?.Address}}</h1>
+    </div>
+    <hr>
+    <div class="col-12">
+        <div class="row">
+
+            <div class="col-md-8 col-12" *ngIf="getPropertyMedia?.Image && getPropertyMedia.Image.length > 0">
+                <div class="card">
+                    <img src="{{ getPropertyMedia.Image[0].Url }}" class="img-fluid" alt="...">
+                </div>
+            </div>
+            <div class="col-md-4 col-12">
+                <ng-container *ngFor="let img of getPropertyMedia?.Image; let i=index">
+                    <ng-container *ngIf="i !== 0">
+                        <div class="card" *ngIf="i < 3">
+                            <img src="{{ img.Url }}" class="img-fluid" alt="...">
+                        </div>
+                    </ng-container>
+                </ng-container>
+                <!-- <div *ngIf="getPropertyMedia.Image.length > 3">
+                    <span>Load More</span>
+                </div> -->
+            </div>
+
+        </div>
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="accordion" id="accordionPanelsStayOpenExample">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="panelsStayOpen-headingOne">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true"
+                                aria-controls="panelsStayOpen-collapseOne">
+                                Property Details
+                            </button>
+                        </h2>
+                        <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show"
+                            aria-labelledby="panelsStayOpen-headingOne">
+                            <div class="accordion-body">
+                                <h5>Property Info</h5>
+                                <ul class="list-details d-flex">
+                                    <li><span class="small-title">Property Code:</span></li>
+                                    <li>{{getDetailsData?.BuildingCode}}</li>
+                                    <li><span class="small-title">Property Name:</span></li>
+                                    <li>{{getDetailsData?.PropertyName}}</li>
+                                    <li><span class="small-title">Sector:</span></li>
+                                    <li>{{getDetailsData?.SectorName}}</li>
+                                    <li><span class="small-title">GLA:</span></li>
+                                    <li>{{getDetailsData?.Gla}}</li>
+                                    <li><span class="small-title">Website URL:</span></li>
+                                    <li><a href="">{{getDetailsData?.WebsiteUrl}}</a></li>
+                                </ul>
+                            </div>
+                            <div class="accordion-body">
+                                <h5>Location</h5>
+                                <ul class="list-details d-flex">
+                                    <li><span class="small-title">Address:</span></li>
+                                    <li>{{getDetailsData?.Address}}</li>
+                                    <li><span class="small-title">Suburb:</span></li>
+                                    <li>{{getDetailsData?.Suburb}}</li>
+                                    <li><span class="small-title">City:</span></li>
+                                    <li>{{getDetailsData?.City}}</li>
+                                    <li><span class="small-title">Province:</span></li>
+                                    <li>{{getDetailsData?.Province}}</li>
+                                    <li><span class="small-title">Country:</span></li>
+                                    <li>{{getDetailsData?.Country}}</li>
+                                    <li><span class="small-title">Postal Code:</span></li>
+                                    <li>{{getDetailsData?.PostCode}}</li>
+                                </ul>
+                            </div>
+                            <div class="accordion-body">
+                                <h5>GPS Coordinates</h5>
+                                <ul class="list-details d-flex">
+                                    <li><span class="small-title">Latitude:</span></li>
+                                    <li>{{getDetailsData?.Latitude}}</li>
+                                    <li><span class="small-title">Longitude:</span></li>
+                                    <li>{{getDetailsData?.Longitude}}</li>
+                                </ul>
+                            </div>
+                            <div class="accordion-body">
+                                <h5>Description</h5>
+                            </div>
+                            <div class="accordion-body">
+                                <h5>Parking Details</h5>
+                                <ul class="list-details d-flex">
+                                    <li><span class="small-title">Parking Ratio:</span></li>
+                                    <li>{{getDetailsData?.ParkingRatio}}</li>
+                                    <li><span class="small-title">Basement Bay:</span></li>
+                                    <li>{{getDetailsData?.BasementBays}}</li>
+                                    <li><span class="small-title">Shaded Bay:</span></li>
+                                    <li>{{getDetailsData?.ShadedBays}}</li>
+                                    <li><span class="small-title">Open Bay:</span></li>
+                                    <li>{{getDetailsData?.OpenBays}}</li>
+                                </ul>
+                            </div>
+                            <div class="accordion-body">
+                                <h5>Property Attributes</h5>
+                                <ul class="list-details d-flex">
+                                    <li *ngFor="let attributes of getPropertyAttributes">
+                                        <span class="small-title">
+                                            <i class="bi bi-check-circle-fill"></i>
+                                            {{attributes.Title}}
+                                        </span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="panelsStayOpen-headingTwo">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#panelsStayOpen-collapseTwo" aria-expanded="false"
+                                aria-controls="panelsStayOpen-collapseTwo">
+                                Media
+                            </button>
+                        </h2>
+                        <div id="panelsStayOpen-collapseTwo" class="accordion-collapse collapse"
+                            aria-labelledby="panelsStayOpen-headingTwo">
+                            <div class="accordion-body">
+                                <div class="row">
+                                    <div class="col-12">
+                                        <h5>Brochure</h5>
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="files">
+                                            <i class="bi bi-file-earmark-pdf"></i>
+                                            <span class="small-title">{{getPropertyMedia?.Brochure?.Name}}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row my-3">
+                                    <div class="col-12">
+                                        <h5>Rate Card</h5>
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="files">
+                                            <i class="bi bi-file-earmark-pdf"></i>
+                                            <span class="small-title">{{getPropertyMedia?.RateCard?.Name}}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-12">
+                                        <h5>Video</h5>
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="files">
+                                            <i class="bi bi-file-play"></i>
+                                            <span class="small-title">{{getPropertyMedia?.Video?.Name}}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="panelsStayOpen-headingThree">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#panelsStayOpen-collapseThree" aria-expanded="false"
+                                aria-controls="panelsStayOpen-collapseThree">
+                                Contact Details
+                            </button>
+                        </h2>
+                        <div id="panelsStayOpen-collapseThree" class="accordion-collapse collapse"
+                            aria-labelledby="panelsStayOpen-headingThree">
+                            <div class="accordion-body">
+                                <div class="d-flex align-items-center gap-4">
+                                    <div class="contact-details d-flex align-items-center gap-2">
+                                        <div class="icon"><i class="bi bi-person-circle"></i></div>
+                                        <div class="details">
+                                            <span class="d-block w-100 contact-title">Broker Liaison</span>
+                                            <span class="d-block w-100">{{getDetailsData?.BrokerName}}</span>
+                                        </div>
+                                    </div>
+                                    <div class="contact-details d-flex align-items-center gap-2">
+                                        <div class="icon"><i class="bi bi-person-circle"></i></div>
+                                        <div class="details">
+                                            <span class="d-block w-100 contact-title">Leasing Contact</span>
+                                            <span class="d-block w-100">{{getDetailsData?.LeasingExecutiveName}}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="panelsStayOpen-headingFour">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#panelsStayOpen-collapseFour" aria-expanded="false"
+                                aria-controls="panelsStayOpen-collapseFour">
+                                Features and Amenities
+                            </button>
+                        </h2>
+                        <div id="panelsStayOpen-collapseFour" class="accordion-collapse collapse"
+                            aria-labelledby="panelsStayOpen-headingFour">
+                            <div class="accordion-body">
+                                <div class="col-12">
+                                    <ul class="list-details d-flex mb-3">
+                                        <li *ngFor="let fa of getPropertyFeatureamenities">
+                                            <span class="small-title">
+                                                <i class="bi bi-check-circle-fill"></i>
+                                                {{fa.Title}}
+                                            </span>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="col-12">
+                                    <p>{{getDetailsData?.FeatureAmenitiesAddtionalDetails}}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="panelsStayOpen-headingFive">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#panelsStayOpen-collapseFive" aria-expanded="false"
+                                aria-controls="panelsStayOpen-collapseFive">
+                                ESG
+                            </button>
+                        </h2>
+                        <div id="panelsStayOpen-collapseFive" class="accordion-collapse collapse"
+                            aria-labelledby="panelsStayOpen-headingFive">
+                            <div class="accordion-body">
+                                <div class="col-12" *ngFor="let esg of getPropertyEsg">
+                                    <p>{{esg.Name}}</p>
+                                    <div class="col-12" *ngFor="let subesg of esg.SubFeatures">
+
+                                        <ng-container *ngIf="subesg.Rating !== ''">
+                                            <ul class="list-details">
+                                                <li><span class="small-title">{{subesg.FeatureName}}</span></li>
+                                                <li>{{subesg.Rating}}</li>
+                                                <ng-container *ngIf="subesg.LevelType !== ''">
+                                                    <li>{{subesg.LevelType}}</li>
+                                                </ng-container>
+                                                <ng-container *ngIf="subesg.OffsetPercentage !== ''">
+                                                    <li>{{subesg.OffsetPercentage}}</li>
+                                                </ng-container>
+                                                <ng-container *ngIf="subesg.Url !== null">
+                                                    <div class="files">
+                                                        <i class="bi bi-file-earmark-pdf"></i>
+                                                        <li>{{getFileName(subesg.Url)}}</li>
+                                                    </div>
+                                                </ng-container>
+
+                                                <ng-container *ngIf="subesg.ValidityStartDate !== '0000-00-00'">
+                                                    <li>{{subesg.ValidityStartDate}}</li>
+                                                    <li>{{subesg.ValidityEndDate}}</li>
+                                                </ng-container>
+
+                                            </ul>
+                                        </ng-container>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 mt-5">
+                <div class="row">
+                    <app-unit-list *ngIf="viewUnitPage"></app-unit-list>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

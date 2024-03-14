@@ -1,0 +1,49 @@
+.navbar-nav {
+    flex-direction: column;
+    width: 100%;
+}
+
+.navbar-nav.lhm-menu .nav-link {
+    font-size: 1rem;
+    font-weight: 500;
+    color: #000;
+    margin: 0.5rem 0;
+    display: flex;
+}
+
+.main-menu {
+    border-bottom: 1px solid #bdbdbd5e;
+}
+
+.main-menu>a {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.submenu-section {
+    background: #d9dcde;
+}
+
+.submenu-section>div {
+    margin: .8rem;
+}
+
+.submenu-section a {
+    text-decoration: none;
+    color: #000;
+    padding: 0.3rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+    width: 100%;
+    display: block;
+}
+
+.submenu-section a:hover {
+    color: #1A4AB9;
+}
+
+.leftmenu-nav {
+    align-items: flex-start;
+    height: 100%;
+}

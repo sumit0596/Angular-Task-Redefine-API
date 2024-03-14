@@ -1,0 +1,32 @@
+
+table.tabel-action-btn tr {
+    display: flex;
+    gap: 0.3rem;
+}
+
+.search-section form {
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+.search-section form input {
+    border-radius: 100px;
+}
+
+.create-user {
+    font-size: 1.1rem;
+    font-weight: 500;
+    background: #1a4ab9;
+    color: #fff;
+    border: none;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.t-title {
+    display: flex;
+    align-items: center;
+    gap: .9rem;
+}

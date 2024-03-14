@@ -1,0 +1,136 @@
+<div class="row card m-2 p-3 mt-4">
+    <div class="header-section">
+        <h1 class="admin-title">Property Media</h1>
+    </div>
+    <hr>
+    <form action="" [formGroup]="mediaForm">
+        <div class="col-md-12">
+            <div class="row">
+                <h1 class="section-title">Media</h1>
+                <div class="col-md-12 col-12 mb-3">
+                    <label class="form-label">Add Property Image</label>
+                    <div class="card property-media p-4">
+                        <ngx-file-drop [multiple]="true" dropZoneLabel="Drop Files Here"
+                            (onFileDrop)="dropped($event, 'Image')" (onFileLeave)="fileLeave($event)">
+                            <ng-template ngx-file-drop-content-tmp let-openFileSelector="openFileSelector">
+                                <button type="button" (click)="openFileSelector($event)">Drop or Browser Files</button>
+                            </ng-template>
+                        </ngx-file-drop>
+
+                        <div class="card mt-4">
+                            <div cdkDropList class="example-list" (cdkDropListDropped)="drop($event)">
+                                <div *ngFor="let mv of mediaImages?.Image" class="example-box justify-content-between" cdkDrag [cdkDragData]="mv">
+                                    <div class="image-desc-main d-flex gap-2">
+                                        <img class="thumbnail" src="{{mv.Url}}" alt="">
+                                        <div class="desc-section">
+                                            <h4>{{mv.Name}}</h4>
+                                            <p>{{mv.CreatedOn}}</p>
+                                        </div>
+                                    </div>
+                                    <div class="action-group d-flex gap-1">
+                                        <a href=""><i class="bi bi-arrows-move"></i></a>
+                                        <a href="" (click)="onDeleteMedia(mv.Id);false"><i class="bi bi-trash"></i></a>
+                                    </div>
+                                </div>
+                            </div>
+                           
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12 col-12 mb-3">
+                    <div class="toggle-link-section d-flex gap-3">
+                        <label class="form-label">Brochure</label>
+                        <mat-slide-toggle [checked]="brochure"
+                            (change)="toggleDiv($event.checked, 'brochure')"></mat-slide-toggle>
+                    </div>
+
+                    <div class="media-file-link mb-3" *ngIf="brochureToggleMediaLink">
+                        <input type="text" class="form-control" formControlName="brochureMediaLink" placeholder="Enter Link">
+                    </div>
+
+                    <div class="card media-file-upload p-4" *ngIf="brochureToggleState">
+                        <ngx-file-drop [multiple]="false" dropZoneLabel="Drop Files Here"
+                            (onFileDrop)="dropped($event,'Brochure')" (onFileLeave)="fileLeave($event)" accept=".pdf">
+                            <ng-template ngx-file-drop-content-tmp let-openFileSelector="openFileSelector">
+                                <button type="button" (click)="openFileSelector($event)">Drop or Browser Files</button>
+                            </ng-template>
+                        </ngx-file-drop>
+
+                        <div class="card mt-4">
+                            <div class="w-100" *ngIf="mediaImages?.Brochure">
+                                <div class="file-and-icon">
+                                    <i class="bi bi-file-earmark-pdf"></i>{{mediaImages.Brochure.Name}}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-12 col-12 mb-3">
+                    <div class="toggle-link-section d-flex gap-3">
+                        <label class="form-label">Rate Card</label>
+                        <mat-slide-toggle [checked]="rateCard"
+                            (change)="toggleDiv($event.checked, 'rateCard')"></mat-slide-toggle>
+                    </div>
+
+                    <div class="media-file-link mb-3" *ngIf="rateCardToggleMediaLink">
+                        <input type="text" class="form-control" formControlName="rateCardMediaLink" placeholder="Enter Link">
+                    </div>
+
+                    <div class="card media-file-upload p-4" *ngIf="rateCardToggleState">
+                        <ngx-file-drop [multiple]="false" dropZoneLabel="Drop Files Here"
+                            (onFileDrop)="dropped($event,'RateCard')" (onFileLeave)="fileLeave($event)" accept=".pdf">
+                            <ng-template ngx-file-drop-content-tmp let-openFileSelector="openFileSelector">
+                                <button type="button" (click)="openFileSelector($event)">Drop or Browser Files</button>
+                            </ng-template>
+                        </ngx-file-drop>
+
+                        <div class="card mt-4">
+                            <div class="w-100" *ngIf="mediaImages?.RateCard">
+                                <div class="file-and-icon">
+                                    <i class="bi bi-file-earmark-pdf"></i>{{mediaImages.RateCard.Name}}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-12 col-12 mb-3">
+                    <div class="toggle-link-section d-flex gap-3">
+                        <label class="form-label">Video</label>
+                        <mat-slide-toggle [checked]="video"
+                            (change)="toggleDiv($event.checked, 'video')"></mat-slide-toggle>
+                    </div>
+
+                    <div class="media-file-link mb-3" *ngIf="videoToggleMediaLink">
+                        <input type="text" class="form-control" formControlName="videoMediaLink" placeholder="Enter Link">
+                    </div>
+
+                    <div class="card media-file-upload p-4" *ngIf="videoToggleState">
+                        <ngx-file-drop [multiple]="false" dropZoneLabel="Drop Files Here"
+                            (onFileDrop)="dropped($event, 'Video')" (onFileLeave)="fileLeave($event)" accept=".mp4">
+                            <ng-template ngx-file-drop-content-tmp let-openFileSelector="openFileSelector">
+                                <button type="button" (click)="openFileSelector($event)">Drop or Browser Files</button>
+                            </ng-template>
+                        </ngx-file-drop>
+
+                        <div class="card mt-4">
+                            <div class="w-100" *ngIf="mediaImages?.Video">
+                                <div class="file-and-icon">
+                                    <i class="bi bi-film"></i>{{mediaImages.Video.Name}}
+                                </div>
+                            </div>
+                        </div>
+                       
+                    </div>
+                </div>
+                
+            </div>
+            <div class="row justify-content-md-end">
+                <div class="col-md-3 col-12">
+                    <button type="submit" class="btn btn-primary" (click)="getValueMedia()">Save</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>

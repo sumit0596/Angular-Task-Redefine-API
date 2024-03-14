@@ -1,0 +1,23 @@
+<div class="row">
+    <app-tabs [tabsMenu]="tabs" (onTabChange)="onTabChange($event)"></app-tabs>
+</div>
+<div class="row">
+    <div class="col-md-12" *ngIf="activatedTabsIndex == 0">
+        <app-property-details (nextTabSwitch)="onTabChangeChild($event)"></app-property-details>
+    </div>
+    <div class="col-md-12" *ngIf="activatedTabsIndex == 1">
+        <app-property-media (nextTabSwitch)="onTabChangeChild($event)"></app-property-media>
+    </div>
+    <div class="col-md-12" *ngIf="activatedTabsIndex == 2">
+       <app-property-contacts (nextTabSwitch)="onTabChangeChild($event)"></app-property-contacts>
+    </div>
+    <div class="col-md-12" *ngIf="activatedTabsIndex == 3">
+      <app-property-features (nextTabSwitch)="onTabChangeChild($event)"></app-property-features>
+    </div>
+    <div class="col-md-12" *ngIf="activatedTabsIndex == 4">
+       <app-property-certification (nextTabSwitch)="onTabChangeChild($event)"></app-property-certification>
+    </div>
+    <div class="col-md-12" *ngIf="activatedTabsIndex == 5">
+       <app-peoperty-confirm></app-peoperty-confirm>
+    </div>
+</div>

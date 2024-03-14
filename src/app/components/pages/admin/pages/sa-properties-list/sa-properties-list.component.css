@@ -1,0 +1,32 @@
+.properties-table th {
+    font-size: 0.9rem;
+    padding: 0.5rem;
+}
+
+.properties-table td {
+    font-size: 0.9rem;
+    vertical-align: middle;
+}
+
+.properties-table th:nth-child(6),
+.properties-table th:nth-child(7),
+.properties-table td:nth-child(6),
+.properties-table td:nth-child(7){
+    text-align: center;
+}
+
+.status>span{
+    background: #0d6efd33;
+    padding: 0.5rem;
+    border-radius: 100px;
+    font-size: 0.8rem;
+}
+
+.create-property{
+    border-radius: 5px !important;
+    padding: 0.5rem;
+    font-size: 1rem !important;
+}
+.dropdown-toggle:empty::after{
+    display: none;
+}

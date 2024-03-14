@@ -1,0 +1,58 @@
+.logout-btn {
+    background: transparent !important;
+    color: #1a4ab9 !important;
+    padding: initial !important;
+    width: 100%;
+    justify-content: center;
+}
+
+.login-main-btn a {
+    background: #1a4ab9;
+    color: #fff;
+    padding: 0.5rem 3.6rem;
+    border-radius: 100px;
+    text-decoration: none;
+    display: flex !important;
+    align-items: center;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+ul.dropdown-menu {
+    width: 100%;
+}
+
+.dropdown-toggle {
+    background: transparent;
+    border: none;
+    color: #000;
+    display: flex;
+    align-items: center;
+    font-size: 1.2rem;
+    gap: 0.5rem;
+}
+
+.user-details-header {
+    display: flex;
+    align-items: center;
+    gap: .8rem;
+}
+
+.user-details-header h5.title {
+    font-size: 0.9rem;
+}
+
+.user-details-header h5 {
+    font-size: .7rem;
+    margin: 0;
+    text-align: left;
+}
+
+.user-details-header i {
+    font-size: 2rem;
+}
+
+.header-nav {
+    z-index: 1;
+    box-shadow: rgb(149 157 165 / 21%) -1px 8px 8px;
+}

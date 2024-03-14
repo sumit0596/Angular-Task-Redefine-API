@@ -1,0 +1,86 @@
+<div class="p-3 card">
+    <div class="col-md-12 mt-4">
+        <div class="header-section">
+            <h1 class="admin-title">Units Created</h1>
+            <div class="d-flex align-items-center gap-3">
+                <div class="download-section">
+                    <button class="downloadBtn"><i class="bi bi-box-arrow-in-right"></i></button>
+                </div>
+                <div class="action-section input-group search-section">
+                    <form novalidate="">
+                        <input type="text" formcontrolname="Search" placeholder="Enter Keyword" class="form-control">
+                        <button type="submit" class="btn btn-outline-secondary search"><i class="bi bi-search"></i></button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <hr>
+    </div>
+    <div class="col-md-12">
+        <table class="table table-striped properties-table">
+            <thead class="mb-3">
+                <th>Unit Name</th>
+                <th>Unit Size(sqm)</th>
+                <th>Gross(R/sqm)</th>
+                <th>Broker Commission Incentive</th>
+                <th>Tenant Incentive</th>
+                <th>Avaliability</th>
+                <th>Actions</th>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>226</td>
+                    <td>Centurion Wayne’s Gym</td>
+                    <td>Office</td>
+                    <td>cnr Hendrick Verwoerd & South Streets</td>
+                    <td>No</td>
+                    <td class="status"><span>Draft</span></td>
+                    <td class="dropdown"><i data-bs-toggle="dropdown" class="bi bi-three-dots-vertical dropdown-toggle"></i>
+                        <ul class="dropdown-menu">
+                            <li><a href="" class="dropdown-item">Edit</a></li>
+                            <li><a href="#" class="dropdown-item">View</a></li>
+                        </ul>
+                    </td>
+                </tr>
+                <tr>
+                    <td>224</td>
+                    <td>Knowledge Park II</td>
+                    <td>Office</td>
+                    <td>Heron Crescent</td>
+                    <td>No</td>
+                    <td class="status"><span>Draft</span></td>
+                    <td class="dropdown"><i data-bs-toggle="dropdown" class="bi bi-three-dots-vertical dropdown-toggle"></i>
+                        <ul class="dropdown-menu">
+                            <li><a href="" class="dropdown-item">Edit</a></li>
+                            <li><a href="#" class="dropdown-item">View</a></li>
+                        </ul>
+                    </td>
+                </tr>
+                <!-- Other rows -->
+            </tbody>
+        </table>
+    </div>
+    <div class="col-md-12 pegination">
+        <pagination-controls ng-reflect-auto-hide="true">
+            <pagination-template ng-reflect-max-size="7">
+                <nav role="navigation" aria-label="Pagination">
+                    <ul class="ngx-pagination">
+                        <li class="pagination-previous disabled">
+                            <span aria-disabled="true"> Previous <span class="show-for-sr">page</span></span>
+                        </li>
+                        <li class="small-screen"> 1 / 7 </li>
+                        <li class="current">
+                            <span aria-live="polite">
+                                <span class="show-for-sr">You're on page </span><span>1</span>
+                            </span>
+                        </li>
+                        <li><a tabindex="0"><span class="show-for-sr">page </span><span>2</span></a></li>
+                        <li><a tabindex="0"><span class="show-for-sr">page </span><span>3</span></a></li>
+                        <!-- Other pages -->
+                        <li class="pagination-next"><a tabindex="0"> Next <span class="show-for-sr">page</span></a></li>
+                    </ul>
+                </nav>
+            </pagination-template>
+        </pagination-controls>
+    </div>
+</div>
