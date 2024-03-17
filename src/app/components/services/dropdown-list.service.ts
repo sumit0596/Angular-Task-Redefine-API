@@ -65,4 +65,12 @@ export class DropdownListService {
 
     return this.http.get(this.baseUrl+ `/attributes/list`, { params })
   }
+
+  incentivesListing(): Observable<any>{
+    let params = new HttpParams()
+    .set('ApiToken', environment.apiToken)
+
+    return this.http.get(this.baseUrl+ `/incentives/list`, { params })
+  }
+
 }

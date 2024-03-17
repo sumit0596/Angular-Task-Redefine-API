@@ -1,15 +1,44 @@
+<div class="card mb-4 bg-light" *ngIf="showSelectedGroup">
+    <div class="col-12">
+        <div class="row p-3 all-select-group">
+            <div class="col-12 mb-2"><span>{{propertyUnitStatus.Units.length}}</span> Units Selected</div>
+            <div class="col-md-3 col-12">
+                <button type="button" class="btn btn-primary" (click)="makeAvailable()">Make All Available</button>
+            </div>
+            <div class="col-md-3 col-12">
+                <button type="button" class="btn btn-primary" (click)="makeUnAvailable()">Make All UnAvailable</button>
+            </div>
+            <div class="col-md-3 col-12">
+                <button type="button" class="btn btn-primary">Tenant Incentives</button>
+            </div>
+            <div class="col-md-3 col-12">
+                <button type="button" class="btn btn-primary">Broker Commission Incentives</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row justify-content-end mb-3">
+    <div class="col-md-3 col-12">
+        <button type="button" class="btn btn-primary" (click)="createUnit()">Create Unit</button>
+    </div>
+</div>
+
 <div class="p-3 card">
+
     <div class="col-md-12 mt-4">
         <div class="header-section">
             <h1 class="admin-title">Units Created</h1>
             <div class="d-flex align-items-center gap-3">
                 <div class="download-section">
-                    <button class="downloadBtn"><i class="bi bi-box-arrow-in-right"></i></button>
+                    <button class="downloadBtn" (click)="exportData()"><i class="bi bi-box-arrow-in-right"></i></button>
                 </div>
                 <div class="action-section input-group search-section">
-                    <form novalidate="">
-                        <input type="text" formcontrolname="Search" placeholder="Enter Keyword" class="form-control">
-                        <button type="submit" class="btn btn-outline-secondary search"><i class="bi bi-search"></i></button>
+                    <form [formGroup]="searchForm" (ngSubmit)="searchList()">
+                        <input type="text" formControlName="Search" placeholder="Enter Keyword" class="form-control">
+                        <button class="clearbtn" (click)="onClearSearch()" *ngIf="searchClear"><i
+                                class="bi bi-x"></i></button>
+                        <button type="submit" class="btn btn-outline-secondary search"><i
+                                class="bi bi-search"></i></button>
                     </form>
                 </div>
             </div>
@@ -19,7 +48,16 @@
     <div class="col-md-12">
         <table class="table table-striped properties-table">
             <thead class="mb-3">
-                <th>Unit Name</th>
+                <th style="width: 5%;"><mat-checkbox
+                    [checked]="allComplete"
+                    (change)="checkAll($event.checked)"></mat-checkbox></th>
+                <th>
+                    <div class="d-flex align-items-center justify-content-between">
+                        Unit Name<div class="sorting-btn-group"><a (click)="ascending('FirstName')"><i
+                                    class="bi bi-chevron-up"></i></a> <a (click)="decending('FirstName')"><i
+                                    class="bi bi-chevron-down"></i></a></div>
+                    </div>
+                </th>
                 <th>Unit Size(sqm)</th>
                 <th>Gross(R/sqm)</th>
                 <th>Broker Commission Incentive</th>
@@ -28,59 +66,34 @@
                 <th>Actions</th>
             </thead>
             <tbody>
-                <tr>
-                    <td>226</td>
-                    <td>Centurion Wayne’s Gym</td>
-                    <td>Office</td>
-                    <td>cnr Hendrick Verwoerd & South Streets</td>
-                    <td>No</td>
-                    <td class="status"><span>Draft</span></td>
-                    <td class="dropdown"><i data-bs-toggle="dropdown" class="bi bi-three-dots-vertical dropdown-toggle"></i>
+                <tr
+                    *ngFor="let unitlist of propertyUnitList | paginate: { itemsPerPage: propertyUnitfilter.PerPage, currentPage: PageNo, totalItems: totalItem }">
+                    <td><mat-checkbox
+                        [checked]="checkedIn"
+                        (change)="checkIn($event.checked, unitlist.PropertyUnitId)"></mat-checkbox></td>
+                    <td>{{unitlist.NameAndLocation}}</td>
+                    <td>{{unitlist.UnitSize}}</td>
+                    <td>{{unitlist.GrossRental}}</td>
+                    <td>{{unitlist.BrokerIncentives}}</td>
+                    <td>{{unitlist.IncentiveStatus}}</td>
+                    <td><mat-slide-toggle [checked]="unitlist.UnitStatus === 'Yes' ? checked : false"
+                            (change)="toggleStatus($event.checked, unitlist.PropertyUnitId)">{{unitlist.UnitStatus}}</mat-slide-toggle>
+                    </td>
+                    <td class="dropdown"><i data-bs-toggle="dropdown"
+                            class="bi bi-three-dots-vertical dropdown-toggle"></i>
                         <ul class="dropdown-menu">
-                            <li><a href="" class="dropdown-item">Edit</a></li>
+                            <li><a href="#" (click)="editUnit(unitlist.PropertyUnitId); false" class="dropdown-item">Edit</a></li>
                             <li><a href="#" class="dropdown-item">View</a></li>
+                            <li><a href="#" class="dropdown-item">Broker Commission Incentive</a></li>
+                            <li><a href="#" class="dropdown-item">Tenant Incentive</a></li>
+                            <li><a href="#" class="dropdown-item">Delete</a></li>
                         </ul>
                     </td>
                 </tr>
-                <tr>
-                    <td>224</td>
-                    <td>Knowledge Park II</td>
-                    <td>Office</td>
-                    <td>Heron Crescent</td>
-                    <td>No</td>
-                    <td class="status"><span>Draft</span></td>
-                    <td class="dropdown"><i data-bs-toggle="dropdown" class="bi bi-three-dots-vertical dropdown-toggle"></i>
-                        <ul class="dropdown-menu">
-                            <li><a href="" class="dropdown-item">Edit</a></li>
-                            <li><a href="#" class="dropdown-item">View</a></li>
-                        </ul>
-                    </td>
-                </tr>
-                <!-- Other rows -->
             </tbody>
         </table>
     </div>
     <div class="col-md-12 pegination">
-        <pagination-controls ng-reflect-auto-hide="true">
-            <pagination-template ng-reflect-max-size="7">
-                <nav role="navigation" aria-label="Pagination">
-                    <ul class="ngx-pagination">
-                        <li class="pagination-previous disabled">
-                            <span aria-disabled="true"> Previous <span class="show-for-sr">page</span></span>
-                        </li>
-                        <li class="small-screen"> 1 / 7 </li>
-                        <li class="current">
-                            <span aria-live="polite">
-                                <span class="show-for-sr">You're on page </span><span>1</span>
-                            </span>
-                        </li>
-                        <li><a tabindex="0"><span class="show-for-sr">page </span><span>2</span></a></li>
-                        <li><a tabindex="0"><span class="show-for-sr">page </span><span>3</span></a></li>
-                        <!-- Other pages -->
-                        <li class="pagination-next"><a tabindex="0"> Next <span class="show-for-sr">page</span></a></li>
-                    </ul>
-                </nav>
-            </pagination-template>
-        </pagination-controls>
+        <pagination-controls [autoHide]="true" (pageChange)="onPageChange($event)"></pagination-controls>
     </div>
 </div>

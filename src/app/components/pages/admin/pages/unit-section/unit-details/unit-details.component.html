@@ -1,0 +1,228 @@
+<div class="row card p-3">
+    <div class="col-md-12 mt-4">
+        <div class="header-section">
+            <ng-container *ngIf="unitId === null; else otherTitle">
+                <h1 class="admin-title">Create New Unit</h1>
+            </ng-container>
+            <ng-template #otherTitle>
+                <h1 class="admin-title">Edit Unit</h1>
+            </ng-template>
+        </div>
+        <hr>
+    </div>
+    <div class="col-md-12">
+        <form [formGroup]="unitCreateform" (ngSubmit)="createUnit()">
+            <div class="row">
+                <h1 class="section-title">Unit Details</h1>
+                <div class="col-md-6 col-12 mb-3">
+                    <label class="form-label">Unit Name & Location in building<span
+                            class="text-danger px-2">*</span></label>
+                    <input type="text" formControlName="NameAndLocation" class="form-control">
+                    <div class="text-danger"
+                        *ngIf="unitCreateform.get('NameAndLocation')?.invalid && unitCreateform.get('NameAndLocation')?.touched">
+                        Please enter Unit Name & Location</div>
+                </div>
+                <div class="col-md-6 col-12 mb-3">
+                    <label class="form-label">Unit Size (sqm)<span class="text-danger px-2">*</span></label>
+                    <input type="text" formControlName="UnitSize" class="form-control">
+                    <div class="text-danger">
+                        <div *ngIf="unitCreateform.get('UnitSize')?.invalid && unitCreateform.get('UnitSize')?.touched">
+                            Please enter Unit Size</div>
+                        <div *ngIf="unitCreateform.get('UnitSize')?.hasError('pattern')">
+                            Only numeric characters (.) are allowed
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-12 mb-3">
+                    <label class="form-label">Premises Condition</label>
+                    <ng-select [clearable]="false" (change)="itemSelected($event)" formControlName="Type">
+                        <ng-option *ngFor="let listItem of premisesList;"
+                            [value]="listItem.id">{{listItem.name}}</ng-option>
+                    </ng-select>
+                </div>
+                <div class="col-md-6 col-12 mb-3">
+                    <label class="form-label">Occupation Date</label>
+                    <mat-form-field>
+                        <input matInput 
+                        [matDatepicker]="selectDate" 
+                        formControlName="UnitAvailableDate"
+                        (dateChange)="selectedDate($event)">
+                        <mat-datepicker-toggle matIconSuffix [for]="selectDate"></mat-datepicker-toggle>
+                        <mat-datepicker #selectDate></mat-datepicker>
+                    </mat-form-field>
+                    
+                </div>
+                <div class="col-md-12 col-12 mb-3">
+                    <label class="form-label">Unit Description</label>
+                    <angular-editor [config]="editorConfig" formControlName="UnitDescription"></angular-editor>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <h1 class="section-title">Rental Details</h1>
+                <div class="col-md-6 col-12 mb-3">
+                    <label class="form-label">Net Rental (R/sqm)<span class="text-danger px-2">*</span></label>
+                    <input type="text" formControlName="BaseRental" class="form-control">
+                    <div class="text-danger">
+                        <div
+                            *ngIf="unitCreateform.get('BaseRental')?.invalid && unitCreateform.get('BaseRental')?.touched">
+                            Please enter Net Rental</div>
+                        <div *ngIf="unitCreateform.get('BaseRental')?.hasError('pattern')">
+                            Only numeric characters (.) are allowed
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-12 mb-3">
+                    <label class="form-label">Operating Costs (R/sqm)<span class="text-danger px-2">*</span></label>
+                    <input type="text" formControlName="BasementBays" class="form-control">
+                    <div class="text-danger">
+                        <div
+                            *ngIf="unitCreateform.get('BasementBays')?.invalid && unitCreateform.get('BasementBays')?.touched">
+                            Please enter Operating Costs</div>
+                        <div *ngIf="unitCreateform.get('BasementBays')?.hasError('pattern')">
+                            Only numeric characters (.) are allowed
+                        </div>
+                    </div>
+
+                </div>
+                <div class="col-md-6 col-12 mb-3">
+                    <label class="form-label">Rates (R/sqm)<span class="text-danger px-2">*</span></label>
+                    <input type="text" formControlName="Rates" class="form-control">
+                    <div class="text-danger">
+                        <div *ngIf="unitCreateform.get('Rates')?.invalid && unitCreateform.get('Rates')?.touched">
+                            Please enter Rates</div>
+                        <div *ngIf="unitCreateform.get('Rates')?.hasError('pattern')">
+                            Only numeric characters (.) are allowed
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-12 mb-3">
+                    <label class="form-label">Gross Rental (R/sqm)</label>
+                    <input type="text" formControlName="GrossRental" class="form-control">
+                </div>
+                <div class="col-md-12 col-12 mb-3">
+                    <mat-slide-toggle class="mb-3" [checked]="togglechecked" (change)="inputToggle($event)">
+                        CID Levy
+                    </mat-slide-toggle>
+                    <input type="text" formControlName="CIDLevey" class="form-control">
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <h1 class="section-title">Access & Comments</h1>
+                <div class="col-md-12 col-12 mb-3">
+                    <label class="form-label">Access Note</label>
+                    <ng-select [clearable]="false" (change)="itemSelected($event)" formControlName="AccessId">
+                        <ng-option *ngFor="let listItem of accessList;"
+                            [value]="listItem.id">{{listItem.name}}</ng-option>
+                    </ng-select>
+                </div>
+                <div class="col-md-12 col-12 mb-3">
+                    <label class="form-label">Comment/ Additional Information (0/700)</label>
+                    <textarea class="form-control" formControlName="AddtionalInformation" rows="5"></textarea>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <h1 class="section-title">Tenant Installation Allowance</h1>
+                <div class="col-md-12 col-12 mb-3">
+                    <div class="d-block">
+                        <mat-checkbox class="example-margin">
+                            Offer Tenant Installation Allowance
+                        </mat-checkbox>
+                    </div>
+                    <label class="form-label">Please Provide Information<span class="text-danger px-2">*</span></label>
+                    <angular-editor formControlName="TenentAllowance" [config]="editorConfig"></angular-editor>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <h1 class="section-title">Tenant Incentives</h1>
+                <div class="col-md-12 col-12 mb-3">
+                    <label class="form-label">Select Incentives</label>
+                    <ng-select [clearable]="true" [multiple]="true" formControlName="PropertyIncentives"
+                        (change)="itemSelected($event)">
+                        <ng-option *ngFor="let listItem of incentiveListing;"
+                            [value]="listItem.Id">{{listItem.Title}}</ng-option>
+                    </ng-select>
+                </div>
+                <div class="col-md-12">
+                    <div class="row my-3 justify-content-md-end">
+                        <div class="col-md-3 col-12">
+                            <button type="submit" class="btn btn-primary">Create New Incentive</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <mat-checkbox class="example-margin" [checked]="showFileds"  (change)="toggleForm($event.checked)">
+                        Offer Space2Spec
+                    </mat-checkbox>
+                    <div class="Space2SpecContainer my-4 card p-3" *ngIf="toggleFields">
+                        <div class="row">
+                            <div class="col-md-6 col-12 mb-3">
+                                <label class="form-label">Net rental escalation(%)<span
+                                        class="text-danger px-2">*</span></label>
+                                <ng-select [clearable]="false" formControlName="NetRental"
+                                    (change)="itemSelected($event)">
+                                    <ng-option *ngFor="let listItem of percentageList;"
+                                        [value]="listItem.id">{{listItem.value}}</ng-option>
+                                </ng-select>
+                                <div class="text-danger">
+                                    <div
+                                        *ngIf="unitCreateform.get('NetRental')?.invalid && unitCreateform.get('NetRental')?.touched">
+                                        Please enter Net Rental</div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-12 mb-3">
+                                <label class="form-label">Ops rental escalation(%)<span
+                                        class="text-danger px-2">*</span></label>
+                                <ng-select [clearable]="false" formControlName="OperationalCost"
+                                    (change)="itemSelected($event)">
+                                    <ng-option *ngFor="let listItem of percentageList;"
+                                        [value]="listItem.id">{{listItem.value}}</ng-option>
+                                </ng-select>
+                                <div class="text-danger">
+                                    <div
+                                        *ngIf="unitCreateform.get('OperationalCost')?.invalid && unitCreateform.get('OperationalCost')?.touched">
+                                        Please enter Operational Cost</div>
+                                </div>
+                            </div>
+                            <h1 class="section-title">Total Space2Spec Value Contribution</h1>
+                            <div class="col-md-6 col-12 mb-3">
+                                <label class="form-label">3-Years Lease</label>
+                                <input type="text" formControlName="ThreeYearsLease" class="form-control">
+                            </div>
+                            <div class="col-md-6 col-12 mb-3">
+                                <label class="form-label">5-Years Lease</label>
+                                <input type="text" formControlName="FiveYearsLease" class="form-control">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <h1 class="section-title">Broker Commission Incentives</h1>
+                <div class="col-md-12 col-12 mb-3">
+                    <label class="form-label">Commission incentive</label>
+                    <ng-select [clearable]="false" (change)="itemSelected($event)" formControlName="BrokerIncentives">
+                        <ng-option *ngFor="let listItem of incentiveList;"
+                            [value]="listItem.id">{{listItem.value}}</ng-option>
+                    </ng-select>
+                </div>
+                <div class="col-md-12 col-12 mb-3">
+                    <label class="form-label">Comment/ Disclaimers (0/700)</label>
+                    <textarea class="form-control" formControlName="CommentDisclaimers" rows="5"></textarea>
+
+                </div>
+            </div>
+            <hr>
+
+            <div class="row justify-content-md-end my-4">
+                <div class="col-md-3 col-12">
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

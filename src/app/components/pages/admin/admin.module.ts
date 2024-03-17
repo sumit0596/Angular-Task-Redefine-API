@@ -30,6 +30,8 @@ import { PeopertyConfirmComponent } from './pages/property-create/steps/peoperty
 import { NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
 import { ManageAttributesComponent } from './pages/manage-attributes/manage-attributes.component';
 import { UnitListComponent } from './pages/unit-section/unit-list/unit-list.component';
+import {MatCheckboxModule} from '@angular/material/checkbox';
+import { UnitDetailsComponent } from './pages/unit-section/unit-details/unit-details.component';
 
 const adminRoutes: Routes = [
   {
@@ -42,6 +44,11 @@ const adminRoutes: Routes = [
       { path: 'create-properties', component: PropertyCreateComponent },
       { path: 'manage-attributes', component: ManageAttributesComponent },
       { path: 'view-property', component: PeopertyConfirmComponent },
+      { path: 'unit-create', 
+        children : [
+          { path: 'unit-details', component: UnitDetailsComponent}
+      ]
+      },
     ]
   },
 
@@ -58,7 +65,7 @@ const adminRoutes: Routes = [
     PropertyFeaturesComponent, 
     PropertyCertificationComponent, 
     PeopertyConfirmComponent, 
-    ManageAttributesComponent, UnitListComponent],
+    ManageAttributesComponent, UnitListComponent, UnitDetailsComponent],
   imports: [
     ReactiveFormsModule,
     RouterModule,
@@ -76,6 +83,7 @@ const adminRoutes: Routes = [
     NgxFileDropModule,
     CdkDropList,
     NgbModalModule,
+    MatCheckboxModule,
     CdkDrag
   ],
   exports: [RouterModule]

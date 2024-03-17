@@ -421,3 +421,9 @@ button.btn.btn-outline-secondary.search {
   color: #1a4ab9;
   font-size: .9rem;
 }
+.dropdown-toggle:empty::after{
+  display: none;
+}
+.properties-table td.dropdown{
+  cursor: pointer;
+}
