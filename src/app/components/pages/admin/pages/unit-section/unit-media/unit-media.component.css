@@ -87,7 +87,6 @@ img.thumbnail {
     gap: 1rem;
     align-items: center;
     padding: 0.5rem 1rem;
-    justify-content: space-between;
 }
 
 .file-and-icon i{

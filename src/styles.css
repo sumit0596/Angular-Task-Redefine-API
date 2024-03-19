@@ -427,3 +427,6 @@ button.btn.btn-outline-secondary.search {
 .properties-table td.dropdown{
   cursor: pointer;
 }
+.modal-footer-btn button {
+  border-radius: 100px;
+}

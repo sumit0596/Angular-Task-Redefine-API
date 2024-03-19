@@ -5,6 +5,8 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { PropertiesService } from 'src/app/components/services/properties.service';
 import { DatePipe } from '@angular/common';
 import { ToastrService } from 'ngx-toastr';
+import { HttpErrorResponse } from '@angular/common/http';
+import { NgxSpinnerService } from 'ngx-spinner';
 
 @Component({
   selector: 'app-property-media',
@@ -23,7 +25,10 @@ export class PropertyMediaComponent {
 
   PropertyId: any;
 
-  timestamp: string = "";
+  mediaCheck: boolean = false;
+  brochureMediaShow: boolean = false;
+  rateCardMediaShow: boolean = false;
+  videoMediaShow: boolean = false;
 
   moveObj: any = {
     PropertyId: '',
@@ -46,20 +51,8 @@ export class PropertyMediaComponent {
   }
 
   constructor(private pl: PropertiesService,
-    private toastr: ToastrService) { }
-
-  brochure: boolean = false;
-  brochureToggleState: boolean = false;
-  brochureToggleMediaLink: boolean = true;
-
-  rateCard: boolean = false;
-  rateCardToggleState: boolean = false;
-  rateCardToggleMediaLink: boolean = true;
-
-  video: boolean = false;
-  videoToggleState: boolean = false;
-  videoToggleMediaLink: boolean = true;
-
+    private toastr: ToastrService,
+    private spinner: NgxSpinnerService) { }
 
   mediaForm = new FormGroup({
     brochureMediaLink: new FormControl(''),
@@ -71,7 +64,11 @@ export class PropertyMediaComponent {
   ngOnInit() {
     const propertyId = localStorage.getItem('PropertyId');
     this.PropertyId = propertyId;
-    this.getDetailsPropertyMedia()
+    this.spinner.show();
+    setTimeout(() => {
+      this.spinner.hide();
+      this.getDetailsPropertyMedia()
+    }, 2000)
   }
 
 
@@ -100,9 +97,6 @@ export class PropertyMediaComponent {
       });
     }
 
-    // console.log(this.mediaLinkObj);
-
-
     this.pl.uploadPropertyMediaLink(this.mediaLinkObj).subscribe((mdl: any) => {
       if (mdl.status === 'success') {
         this.toastr.success(mdl.message);
@@ -115,39 +109,28 @@ export class PropertyMediaComponent {
 
   dropped(files: NgxFileDropEntry[], arrgs: string) {
     this.files = files
-    // console.log(files);
-
     for (const droppedFile of files) {
       if (droppedFile.fileEntry.isFile) {
         const fileEntry = droppedFile.fileEntry as FileSystemFileEntry;
-
         fileEntry.file((file: File) => {
-
-          // console.log(file);
-
           const formData = new FormData();
           formData.append('File', file, file.name);
           formData.append('PropertyId', this.PropertyId);
           formData.append('Type', arrgs);
-
-
           this.uploadMedia(formData);
-
         })
       }
-
     }
   }
 
   uploadMedia(formData: FormData) {
-    this.pl.uploadPropertyImages(formData).subscribe((upfiles: any) => {
-      if (upfiles.status === 'success') {
-        // console.log(upfiles);
-        this.toastr.success(upfiles.message);
-        this.ngOnInit();
+    this.pl.uploadPropertyImages(formData).subscribe({
+      next: (upfiles: any) => {
+        (upfiles.status === 'success') ? (this.toastr.success(upfiles.message), this.ngOnInit()) : null
+      }, error: (error: HttpErrorResponse) => {
+        this.toastr.success(error.error.message)
       }
     })
-
   }
 
 
@@ -163,10 +146,7 @@ export class PropertyMediaComponent {
 
   drop(event: CdkDragDrop<any[]>) {
     this.moveObj.Media = [];
-
-
     moveItemInArray(this.files, event.previousIndex, event.currentIndex);
-
     this.mediaImages.Image.forEach((x: any, inx: any) => {
       this.moveObj.PropertyId = this.PropertyId;
       if (x.Id === x.Id) {
@@ -174,76 +154,44 @@ export class PropertyMediaComponent {
           PropertyMediaId: x.Id,
           Position: inx
         });
-        // this.moveObj.Media.PropertyMediaId = x.Id;
-        // this.moveObj.Media.Position = inx;
-        // console.log(this.moveObj);
         this.moveFilePosition(this.moveObj)
       }
     });
-
-
-    // console.log(event.previousIndex, event.currentIndex);
-
-
   }
 
 
-  toggleDiv(checked: boolean, checkSection: string) {
-    switch (checkSection) {
-      case 'brochure':
-        this.brochure = checked;
-        this.brochureToggleState = this.brochure;
-        this.brochureToggleMediaLink = !this.brochure;
-        break;
-      case 'rateCard':
-        this.rateCard = checked;
-        this.rateCardToggleState = this.rateCard;
-        this.rateCardToggleMediaLink = !this.rateCard;
-        break;
-      case 'video':
-        this.video = checked;
-        this.videoToggleState = this.video;
-        this.videoToggleMediaLink = !this.video;
-        break;
-    }
+  toggleDiv(checked: boolean, linkValue: string) {
+    linkValue === 'brochure' ? checked === true ? this.brochureMediaShow = true : this.brochureMediaShow = false :
+    linkValue === 'rateCard' ? checked === true ? this.rateCardMediaShow = true : this.rateCardMediaShow = false :
+    linkValue === 'video' ? checked === true ? this.videoMediaShow = true : this.videoMediaShow = false : null;
   }
 
   getDetailsPropertyMedia() {
     this.pl.propertyDetails(this.PropertyId).subscribe((pd: any) => {
       this.mediaImages = pd.data.media
-
-      this.mediaForm.patchValue({
-        brochureMediaLink: pd.data?.media.Brochure['Url'] ,
-        rateCardMediaLink: pd.data?.media.RateCard['Url'],
-        videoMediaLink: pd.data?.media.Video['Url'],
-      })
+      if(this.mediaImages.Brochure.IsFile === 0 && this.mediaImages.Brochure.IsFile === 0 && this.mediaImages.Video.IsFile === 0 ){
+        this.mediaForm.patchValue({
+          brochureMediaLink: pd.data?.media?.Brochure['Url'],
+          rateCardMediaLink: pd.data?.media?.RateCard['Url'],
+          videoMediaLink: pd.data?.media?.Video['Url'],
+        })
+      }
+      
     })
   }
 
   onDeleteMedia(dl: any) {
-    this.pl.propertyImagesDelete(dl).subscribe((del: any) => {
-      // console.log(del);
-      if (del.status === 'success') {
-        this.toastr.success(del.message);
-        this.ngOnInit();
+    this.pl.propertyImagesDelete(dl).subscribe({
+      next: (del: any) => {
+        (del.status === 'success') ? (this.toastr.success(del.message), this.ngOnInit()) : null
       }
     })
-
   }
 
   moveFilePosition(dp: any) {
-
-    // this.mediaImages.Image.map((x:any, inx:any)=>{
-    //   this.moveObj.PropertyId = this.PropertyId
-    //   this.moveObj.Media.PropertyMediaId = x.Id
-    //   this.moveObj.Media.Position = dp
-    //  })
-
     this.pl.propertyImagesPosition(dp).subscribe((mv: any) => {
-      // console.log(mv);
+      this.getDetailsPropertyMedia()
     })
-    this.getDetailsPropertyMedia()
-
   }
 
 }

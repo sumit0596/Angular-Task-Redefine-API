@@ -6,6 +6,8 @@ import * as XLSX from '../../../../../../../node_modules/xlsx';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { ToastrService } from 'ngx-toastr';
+import { NgxSpinnerService } from 'ngx-spinner';
 
 @Component({
   selector: 'app-sa-properties-list',
@@ -15,7 +17,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 export class SaPropertiesListComponent implements OnInit {
 
   @ViewChild('closeButton') closeButton!: ElementRef;
-  
+
   propertyList: any[] = [];
   PageNo: any = 1;
   totalItem: any;
@@ -44,24 +46,32 @@ export class SaPropertiesListComponent implements OnInit {
     CompletionType: ''
   }
 
+  IsFeatured: any;
+
+  checked: boolean = true;
 
   constructor(private pl: PropertiesService,
     private sectors: DropdownListService,
     private router: Router,
-    private modalService: NgbModal) { }
+    private toastr: ToastrService,
+    private spinner: NgxSpinnerService,
+    private modalService: NgbModal) {
+    localStorage.removeItem('PropertyId');
+  }
 
   ngOnInit() {
-    
     this.getSectorList();
-    this.getPropertyList(this.propertyfilter)
-    localStorage.removeItem('PropertyId');
+    this.spinner.show();
+    setTimeout(() => {
+      this.spinner.hide();
+      this.getPropertyList(this.propertyfilter)
+    }, 2000)
   }
 
   getPropertyList(propertyfilter: any) {
     this.pl.propertyList(propertyfilter).subscribe((res: any) => {
       this.propertyList = res.data.properties;
       this.totalItem = res.data.totalProperty;
-
       this.propertyfilter.PerPage = 10;
     })
   }
@@ -70,8 +80,6 @@ export class SaPropertiesListComponent implements OnInit {
   getSectorList() {
     this.sectors.sectorList().subscribe((sector: any) => {
       this.sectorList = sector.data
-      // console.log(this.sectorList);
-
     })
   }
 
@@ -159,12 +167,8 @@ export class SaPropertiesListComponent implements OnInit {
 
   checkMda() {
     this.detailsFilter.BuildingCode = this.mdaForm.value;
-
-
     this.pl.mdaGetProperty(this.detailsFilter.BuildingCode).subscribe({
       next: (mda: any) => {
-
-        // console.log(mda);
         if (mda.status === 'success') {
           this.closeButton.nativeElement.click();
         }
@@ -183,18 +187,37 @@ export class SaPropertiesListComponent implements OnInit {
   }
 
 
-  editSection(pageId:any){
+  editSection(pageId: any) {
     localStorage.setItem('PropertyId', pageId);
 
     this.router.navigate(['admin/create-properties']);
-    
+
   }
 
-  viewSection(pageId:any, page:any){
+  viewSection(pageId: any, page: any) {
     localStorage.setItem('PropertyId', pageId);
 
-    this.router.navigate(['admin/view-property'],  { queryParams: { pageData: JSON.stringify(page) } });
+    this.router.navigate(['admin/view-property'], { queryParams: { pageData: JSON.stringify(page) } });
 
+  }
+
+  toggleStatus(e: any, propertyId: number) {
+    this.IsFeatured = e === true ? 1 : 0;
+    const formData = new FormData();
+    formData.append('IsFeatured', this.IsFeatured)
+    this.setPropertyFeatureStatus(propertyId, formData);
+  }
+
+
+  setPropertyFeatureStatus(pid: number, formData: FormData) {
+    this.pl.propertyFeatureChange(pid, formData).subscribe({
+      next: (st: any) => {
+        st.status === 'success' ? (this.getPropertyList(this.propertyfilter), this.toastr.success(st.message)) : null;
+      }, error: (error: HttpErrorResponse) => {
+        this.toastr.error(error.error.message)
+        this.getPropertyList(this.propertyfilter)
+      }
+    })
   }
 
 }

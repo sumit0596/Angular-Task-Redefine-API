@@ -30,8 +30,15 @@ import { PeopertyConfirmComponent } from './pages/property-create/steps/peoperty
 import { NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
 import { ManageAttributesComponent } from './pages/manage-attributes/manage-attributes.component';
 import { UnitListComponent } from './pages/unit-section/unit-list/unit-list.component';
-import {MatCheckboxModule} from '@angular/material/checkbox';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import { UnitDetailsComponent } from './pages/unit-section/unit-details/unit-details.component';
+import { UnitSectionComponent } from './pages/unit-section/unit-section.component';
+import { UnitFeatureComponent } from './pages/unit-section/unit-feature/unit-feature.component';
+import { UnitMediaComponent } from './pages/unit-section/unit-media/unit-media.component';
+import { IncentiveSectionComponent } from './pages/incentive-section/incentive-section.component';
+import { IncentiveListComponent } from './pages/incentive-section/incentive-list/incentive-list.component';
+import { IncentiveCreateComponent } from './pages/incentive-section/incentive-create/incentive-create.component';
+import { MatRadioModule } from '@angular/material/radio';
 
 const adminRoutes: Routes = [
   {
@@ -44,10 +51,14 @@ const adminRoutes: Routes = [
       { path: 'create-properties', component: PropertyCreateComponent },
       { path: 'manage-attributes', component: ManageAttributesComponent },
       { path: 'view-property', component: PeopertyConfirmComponent },
-      { path: 'unit-create', 
-        children : [
-          { path: 'unit-details', component: UnitDetailsComponent}
-      ]
+      { path: 'create-unit', component: UnitSectionComponent },
+      { path: 'manage-incentives', component: IncentiveListComponent },
+      { path: 'create-incentives', component: IncentiveCreateComponent },
+      {
+        path: 'unit-create',
+        children: [
+          { path: 'unit-details', component: UnitDetailsComponent }
+        ]
       },
     ]
   },
@@ -60,12 +71,12 @@ const adminRoutes: Routes = [
     SaPropertiesListComponent, PropertyCreateComponent,
     TabsComponent,
     PropertyDetailsComponent,
-    PropertyMediaComponent, 
-    PropertyContactsComponent, 
-    PropertyFeaturesComponent, 
-    PropertyCertificationComponent, 
-    PeopertyConfirmComponent, 
-    ManageAttributesComponent, UnitListComponent, UnitDetailsComponent],
+    PropertyMediaComponent,
+    PropertyContactsComponent,
+    PropertyFeaturesComponent,
+    PropertyCertificationComponent,
+    PeopertyConfirmComponent,
+    ManageAttributesComponent, UnitListComponent, UnitDetailsComponent, UnitSectionComponent, UnitFeatureComponent, UnitMediaComponent, IncentiveSectionComponent, IncentiveListComponent, IncentiveCreateComponent],
   imports: [
     ReactiveFormsModule,
     RouterModule,
@@ -84,6 +95,7 @@ const adminRoutes: Routes = [
     CdkDropList,
     NgbModalModule,
     MatCheckboxModule,
+    MatRadioModule,
     CdkDrag
   ],
   exports: [RouterModule]

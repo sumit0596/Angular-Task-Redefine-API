@@ -9,10 +9,14 @@
                 <button type="button" class="btn btn-primary" (click)="makeUnAvailable()">Make All UnAvailable</button>
             </div>
             <div class="col-md-3 col-12">
-                <button type="button" class="btn btn-primary">Tenant Incentives</button>
+                <button type="button" 
+                class="btn btn-primary" data-bs-toggle="modal"
+                    data-bs-target="#tenantIncentive"
+                    class="btn btn-primary">Tenant Incentives</button>
             </div>
             <div class="col-md-3 col-12">
-                <button type="button" class="btn btn-primary">Broker Commission Incentives</button>
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                    data-bs-target="#brokerCommission">Broker Commission Incentives</button>
             </div>
         </div>
     </div>
@@ -48,9 +52,8 @@
     <div class="col-md-12">
         <table class="table table-striped properties-table">
             <thead class="mb-3">
-                <th style="width: 5%;"><mat-checkbox
-                    [checked]="allComplete"
-                    (change)="checkAll($event.checked)"></mat-checkbox></th>
+                <th style="width: 5%;"><mat-checkbox [checked]="allComplete"
+                        (change)="checkAll($event.checked)"></mat-checkbox></th>
                 <th>
                     <div class="d-flex align-items-center justify-content-between">
                         Unit Name<div class="sorting-btn-group"><a (click)="ascending('FirstName')"><i
@@ -68,9 +71,8 @@
             <tbody>
                 <tr
                     *ngFor="let unitlist of propertyUnitList | paginate: { itemsPerPage: propertyUnitfilter.PerPage, currentPage: PageNo, totalItems: totalItem }">
-                    <td><mat-checkbox
-                        [checked]="checkedIn"
-                        (change)="checkIn($event.checked, unitlist.PropertyUnitId)"></mat-checkbox></td>
+                    <td><mat-checkbox [checked]="checkedIn"
+                            (change)="checkIn($event.checked, unitlist.PropertyUnitId)"></mat-checkbox></td>
                     <td>{{unitlist.NameAndLocation}}</td>
                     <td>{{unitlist.UnitSize}}</td>
                     <td>{{unitlist.GrossRental}}</td>
@@ -82,10 +84,17 @@
                     <td class="dropdown"><i data-bs-toggle="dropdown"
                             class="bi bi-three-dots-vertical dropdown-toggle"></i>
                         <ul class="dropdown-menu">
-                            <li><a href="#" (click)="editUnit(unitlist.PropertyUnitId); false" class="dropdown-item">Edit</a></li>
+                            <li><a href="#" (click)="editUnit(unitlist.PropertyUnitId); false"
+                                    class="dropdown-item">Edit</a></li>
                             <li><a href="#" class="dropdown-item">View</a></li>
-                            <li><a href="#" class="dropdown-item">Broker Commission Incentive</a></li>
-                            <li><a href="#" class="dropdown-item">Tenant Incentive</a></li>
+                            <li><a href="#" class="dropdown-item" data-bs-toggle="modal"
+                                    data-bs-target="#brokerCommission"
+                                    (click)="brokerCommisionClick(unitlist.PropertyUnitId); false">Broker Commission
+                                    Incentive</a></li>
+                            <li><a href="#" class="dropdown-item" data-bs-toggle="modal"
+                                    data-bs-target="#tenantIncentive"
+                                    (click)="brokerCommisionClick(unitlist.PropertyUnitId); false">Tenant Incentive</a>
+                            </li>
                             <li><a href="#" class="dropdown-item">Delete</a></li>
                         </ul>
                     </td>
@@ -95,5 +104,71 @@
     </div>
     <div class="col-md-12 pegination">
         <pagination-controls [autoHide]="true" (pageChange)="onPageChange($event)"></pagination-controls>
+    </div>
+</div>
+
+<div class="modal fade" id="brokerCommission" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Broker Commission Incentives</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form [formGroup]="incentiveForm" (ngSubmit)="incentiveFormSubmit()">
+                    <div class="row">
+                        <div class="col-md-12 col-12 mb-3">
+                            <label class="form-label">Commission Incentive</label>
+                            <ng-select [clearable]="false" (change)="itemSelected($event)"
+                                formControlName="BrokerIncentives">
+                                <ng-option *ngFor="let listItem of incentiveList;"
+                                    [value]="listItem.value">{{listItem.value}}</ng-option>
+                            </ng-select>
+                        </div>
+                        <div class="col-md-12 col-12 mb-3">
+                            <label class="form-label">Comment/ Disclaimers (4/700)</label>
+                            <textarea class="form-control" formControlName="CommentDisclaimers" id="" cols="30"
+                                rows="4"></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer modal-footer-btn">
+                        <button type="button" #closeButton class="btn btn-secondary"
+                            data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Save changes</button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="tenantIncentive" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Tenant Incentive</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form [formGroup]="tenantIncentiveForm" (ngSubmit)="tenantIncentiveFormSubmit()">
+                    <div class="row">
+                        <div class="col-md-12 col-12 mb-3">
+                            <label class="form-label">Commission Incentive</label>
+                            <ng-select [clearable]="false" [multiple]="true" (change)="itemSelected($event)" formControlName="Incentives">
+                                <ng-option *ngFor="let listItem of incentiveListing;"
+                                    [value]="listItem.Id">{{listItem.Title}}</ng-option>
+                            </ng-select>
+                        </div>
+                    </div>
+                    <div class="modal-footer modal-footer-btn">
+                        <button type="button" #closeButton2 class="btn btn-secondary"
+                            data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Save changes</button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
     </div>
 </div>

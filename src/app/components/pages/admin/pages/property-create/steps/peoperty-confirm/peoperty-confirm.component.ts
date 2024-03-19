@@ -39,7 +39,6 @@ export class PeopertyConfirmComponent {
       this.getPropertyFeatureamenities = cnf.data.featureamenities
       this.getPropertyMedia = cnf.data.media
       this.getPropertyEsg = cnf.data.esgfeatures
-      console.log(`conf`,cnf);
     })
   }
 

@@ -1,0 +1,95 @@
+<div class="row justify-content-end mb-3">
+    <div class="col-md-3 col-12">
+        <button type="button" class="btn btn-primary" (click)="createIncentive()">Create New Incentive</button>
+    </div>
+</div>
+
+<div class="p-3 card">
+    <div class="col-md-12 mt-4">
+        <div class="header-section">
+            <h1 class="admin-title">All Incentives</h1>
+            <div class="d-flex align-items-center gap-3">
+                <div class="download-section">
+                    <button class="downloadBtn" (click)="exportData()"><i class="bi bi-box-arrow-in-right"></i></button>
+                </div>
+                <div class="action-section input-group search-section">
+                    <form [formGroup]="searchForm" (ngSubmit)="searchList()">
+                        <input type="text" formControlName="Search" placeholder="Enter Keyword" class="form-control">
+                        <button class="clearbtn" (click)="onClearSearch()" *ngIf="searchClear"><i
+                                class="bi bi-x"></i></button>
+                        <button type="submit" class="btn btn-outline-secondary search"><i
+                                class="bi bi-search"></i></button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <hr>
+    </div>
+    <div class="col-md-12">
+        <table class="table table-striped properties-table">
+            <thead class="mb-3">
+                <th>
+                    <div class="d-flex align-items-center justify-content-between">
+                        Name<div class="sorting-btn-group"><a (click)="ascending('Title')"><i
+                                    class="bi bi-chevron-up"></i></a> <a (click)="decending('Title')"><i
+                                    class="bi bi-chevron-down"></i></a></div>
+                    </div>
+                </th>
+                <th>
+                    <div class="d-flex align-items-center justify-content-between">
+                        Description
+                    </div>
+                </th>
+                <th>
+                    <div class="d-flex align-items-center justify-content-between">
+                        Visibility<div class="sorting-btn-group"><a (click)="ascending('Visibility')"><i
+                                    class="bi bi-chevron-up"></i></a> <a (click)="decending('Visibility')"><i
+                                    class="bi bi-chevron-down"></i></a></div>
+                    </div>
+                </th>
+                <th>
+                    <div class="d-flex align-items-center justify-content-between">
+                        Created By<div class="sorting-btn-group"><a (click)="ascending('AddedBy')"><i
+                                    class="bi bi-chevron-up"></i></a> <a (click)="decending('AddedBy')"><i
+                                    class="bi bi-chevron-down"></i></a></div>
+                    </div>
+                </th>
+                <th>
+                    <div class="d-flex align-items-center justify-content-between">
+                        Date Added<div class="sorting-btn-group"><a (click)="ascending('CreatedOn')"><i
+                                    class="bi bi-chevron-up"></i></a> <a (click)="decending('CreatedOn')"><i
+                                    class="bi bi-chevron-down"></i></a></div>
+                    </div>
+                </th>
+                <th>
+                    <div class="d-flex align-items-center justify-content-between">
+                        Actions
+                    </div>
+                </th>
+            </thead>
+            <tbody>
+                <tr
+                    *ngFor="let listItem of propertyIncentivesList | paginate: { itemsPerPage: propertyincentiveFilter.PerPage, currentPage: PageNo, totalItems: totalItem }">
+                    <td>{{listItem.Title | slice:0:20}}</td>
+                    <td>{{listItem.AdditionalInformation | slice:0:20}}</td>
+                    <td>{{listItem.Visibility}}</td>
+                    <td>{{listItem.AddedBy}}</td>
+                    <td>{{listItem.CreatedOn | date:'shortDate'}}</td>
+                    <td class="dropdown"><i data-bs-toggle="dropdown"
+                            class="bi bi-three-dots-vertical dropdown-toggle"></i>
+                        <ul class="dropdown-menu">
+                            <li><a href="#" (click)="editUnit(listItem.IncentiveId); false"
+                                    class="dropdown-item">Edit</a></li>
+                            <li><a href="#" class="dropdown-item">View</a></li>
+                            <li><a href="#" class="dropdown-item"
+                                (click)="delUnit(listItem.IncentiveId); false">Delete</a></li>
+                        </ul>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="col-md-12 pegination">
+        <pagination-controls [autoHide]="true" (pageChange)="onPageChange($event)"></pagination-controls>
+    </div>
+</div>

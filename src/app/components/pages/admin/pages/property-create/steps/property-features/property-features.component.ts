@@ -15,14 +15,15 @@ export class PropertyFeaturesComponent {
 
   constructor(private pl: PropertiesService,
     private fieldslist: DropdownListService,
-    private toastr: ToastrService) { }
+    private toastr: ToastrService) {
+  }
 
   @Output() nextTabSwitch = new EventEmitter()
   activatedTabsIndex: number = 4;
 
-
+  unitId: any;
   sectorId: any;
-  propertyId : any
+  propertyId: any
   htmlFieldLabel: any
 
   dynamicFieldStates: { [key: number]: boolean } = {};
@@ -89,16 +90,14 @@ export class PropertyFeaturesComponent {
       this.propertyId = s.data.details.PropertyId
       this.fa = s.data.featureamenities.features
       // console.log(this.fa);
-      
+
       this.fa.forEach((ff: any) => {
-        if(ff.Checked === 1){
+        if (ff.Checked === 1) {
           this.dynamicFieldStates[ff.Id] = true;
         }
       })
-      
-      this.featureForm.patchValue({
-        FeatureAmenitiesAddtionalDetails: s.data.featureamenities['FeatureAmenitiesAddtionalDetails']
-    })
+
+      this.featureForm.patchValue(s.data.featureamenities)
 
       this.getValues(this.fa.Id);
       this.getFeatureAmenitiesSector();
@@ -136,14 +135,15 @@ export class PropertyFeaturesComponent {
   }
 
 
-  toggleDiv(checked: any, checkSection: number, index:any) {
+
+  toggleDiv(checked: any, checkSection: number, index: any) {
     this.dynamicFieldStates[checkSection] = checked;
-    
+
   }
 
   featureData() {
 
-  
+
     this.dataSet.forEach((data, index) => {
 
       const control = this.featureForm.get('Value') as FormArray;
@@ -154,17 +154,17 @@ export class PropertyFeaturesComponent {
 
     const selectedData = this.dataSet.filter((data, index) => {
       return this.dynamicFieldStates[data.FeaturesAmenitiesSectorId];
-      
+
     });
 
-    
-    this.objj.FeatureAmenitiesAddtionalDetails = this.featureForm.value.FeatureAmenitiesAddtionalDetails 
-    this.objj.FeaturesAmenitiesSectorId =selectedData
+
+    this.objj.FeatureAmenitiesAddtionalDetails = this.featureForm.value.FeatureAmenitiesAddtionalDetails
+    this.objj.FeaturesAmenitiesSectorId = selectedData
     this.objj.PropertyId = this.propertyId
 
     // console.log(this.objj);
-    
-    this.pl.addPropertyFeatureAmenities(this.objj).subscribe((res:any)=>{
+
+    this.pl.addPropertyFeatureAmenities(this.objj).subscribe((res: any) => {
       if (res.status === 'success') {
         this.toastr.success(res.message);
         this.nextTabSwitch.emit(this.activatedTabsIndex);

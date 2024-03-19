@@ -17,6 +17,7 @@ import { ToastrModule } from 'ngx-toastr';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AdminModule } from './components/pages/admin/admin.module';
 import {NgxPaginationModule} from 'ngx-pagination';
+import { NgxSpinnerModule } from "ngx-spinner";
 
 const routes: Routes = [
   { path: '', component: LoginComponent },
@@ -43,6 +44,7 @@ const routes: Routes = [
     ReactiveFormsModule,
     AdminModule,
     NgxPaginationModule,
+    NgxSpinnerModule.forRoot({ type: 'ball-scale-multiple' }), 
     ToastrModule.forRoot(),
   ],
   exports: [RouterModule,],

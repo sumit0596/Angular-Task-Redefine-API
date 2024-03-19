@@ -94,3 +94,7 @@ img.thumbnail {
     font-size: 2.5rem;
     color: red;
 }
+
+i.bi.bi-trash {
+    font-size: 1.3rem !important;
+}

@@ -8,6 +8,7 @@ import { DateAdapter } from '@angular/material/core';
 import { MatDatepickerInputEvent } from '@angular/material/datepicker';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ToastrService } from 'ngx-toastr';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-unit-details',
@@ -22,6 +23,7 @@ export class UnitDetailsComponent {
     private fb: FormBuilder,
     private datePipe: DatePipe,
     private toastr: ToastrService,
+    private router: Router,
     private dateAdapter: DateAdapter<Date>) {
     this.unitId = localStorage.getItem('unitId')
     this.propertyId = localStorage.getItem('PropertyId')
@@ -188,7 +190,7 @@ export class UnitDetailsComponent {
 
 
   itemSelected(e: any) {
-    console.log(e);
+    // console.log(e);
   }
 
   unitForm() {
@@ -260,5 +262,10 @@ export class UnitDetailsComponent {
   selectedDate(e: MatDatepickerInputEvent<Date>) {
     const datePick = this.datePipe.transform(e.value, 'yyyy-MM-dd');
     this.unitCreateform.get('UnitAvailableDate')?.setValue(datePick)
+  }
+
+  createNewincentive() {
+    localStorage.removeItem('IncentiveId')
+    this.router.navigate(['admin/create-incentives']);
   }
 }

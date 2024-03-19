@@ -22,7 +22,7 @@
                 <div class="col-md-6 col-12 mb-3">
                     <label class="form-label">Sector</label>
                     <ng-select [(ngModel)]="sectorSelect" [clearable]="false" (change)="itemSelected($event)"
-                        formControlName="SectorId" [readonly]="sectorSelect">
+                        formControlName="SectorId">
                         <ng-option *ngFor="let sectorNames of sectorList"
                             [value]="sectorNames.Id">{{sectorNames.Name}}</ng-option>
                     </ng-select>
@@ -46,7 +46,7 @@
                             Please enter Numeric
                         </div>
                     </div>
-                    
+
                 </div>
                 <div class="col-md-12 col-12 mb-3">
                     <label class="form-label">Website URL</label>
@@ -214,9 +214,8 @@
                 <h1 class="section-title">Property Attributes</h1>
                 <div class="col-md-12 col-12 mb-3">
                     <label class="form-label">Property Attributes</label>
-                    <!-- <input type="text" class="form-control" formControlName="PropertyAttributes"> -->
-                    <ng-select [(ngModel)]="atributesSelect" [multiple]="true" [clearable]="true" (change)="itemSelected($event)"
-                        formControlName="PropertyAttributes">
+                    <ng-select [(ngModel)]="atributesSelect" [multiple]="true" [clearable]="true"
+                        (change)="itemSelected($event)" formControlName="PropertyAttributes">
                         <ng-option *ngFor="let attributesName of attributes;"
                             [value]="attributesName.Id">{{attributesName.Title}}</ng-option>
                     </ng-select>
@@ -226,7 +225,8 @@
 
             <div class="row justify-content-md-end my-4">
                 <div class="col-md-3 col-12">
-                    <button type="submit" class="btn btn-primary" *ngIf="propertyDetailsSt !== 'success'" (click)="getFormData()">Save</button>
+                    <button type="submit" class="btn btn-primary" *ngIf="propertyDetailsSt !== 'success'"
+                        (click)="getFormData()">Save</button>
                     <button type="submit" class="btn btn-primary" (click)="updateFormData()"
                         *ngIf="propertyDetailsSt === 'success'">Update</button>
                 </div>

@@ -40,15 +40,15 @@
                 <div class="col-md-12 col-12 mb-3">
                     <div class="toggle-link-section d-flex gap-3">
                         <label class="form-label">Brochure</label>
-                        <mat-slide-toggle [checked]="brochure"
+                        <mat-slide-toggle [checked]="mediaImages?.Brochure?.IsFile === 1 ? 'true' : false"
                             (change)="toggleDiv($event.checked, 'brochure')"></mat-slide-toggle>
                     </div>
 
-                    <div class="media-file-link mb-3" *ngIf="brochureToggleMediaLink">
+                    <div class="media-file-link mb-3" *ngIf="brochureMediaShow">
                         <input type="text" class="form-control" formControlName="brochureMediaLink" placeholder="Enter Link">
                     </div>
 
-                    <div class="card media-file-upload p-4" *ngIf="brochureToggleState">
+                    <div class="card media-file-upload p-4" *ngIf="!brochureMediaShow">
                         <ngx-file-drop [multiple]="false" dropZoneLabel="Drop Files Here"
                             (onFileDrop)="dropped($event,'Brochure')" (onFileLeave)="fileLeave($event)" accept=".pdf">
                             <ng-template ngx-file-drop-content-tmp let-openFileSelector="openFileSelector">
@@ -56,8 +56,8 @@
                             </ng-template>
                         </ngx-file-drop>
 
-                        <div class="card mt-4">
-                            <div class="w-100" *ngIf="mediaImages?.Brochure">
+                        <div class="card mt-4" *ngIf="mediaImages?.Brochure">
+                            <div class="w-100">
                                 <div class="file-and-icon">
                                     <i class="bi bi-file-earmark-pdf"></i>{{mediaImages.Brochure.Name}}
                                 </div>
@@ -69,15 +69,15 @@
                 <div class="col-md-12 col-12 mb-3">
                     <div class="toggle-link-section d-flex gap-3">
                         <label class="form-label">Rate Card</label>
-                        <mat-slide-toggle [checked]="rateCard"
+                        <mat-slide-toggle [checked]="mediaImages?.RateCard?.IsFile === 1 ? 'true' : false"
                             (change)="toggleDiv($event.checked, 'rateCard')"></mat-slide-toggle>
                     </div>
 
-                    <div class="media-file-link mb-3" *ngIf="rateCardToggleMediaLink">
+                    <div class="media-file-link mb-3" *ngIf="rateCardMediaShow">
                         <input type="text" class="form-control" formControlName="rateCardMediaLink" placeholder="Enter Link">
                     </div>
 
-                    <div class="card media-file-upload p-4" *ngIf="rateCardToggleState">
+                    <div class="card media-file-upload p-4" *ngIf="!rateCardMediaShow">
                         <ngx-file-drop [multiple]="false" dropZoneLabel="Drop Files Here"
                             (onFileDrop)="dropped($event,'RateCard')" (onFileLeave)="fileLeave($event)" accept=".pdf">
                             <ng-template ngx-file-drop-content-tmp let-openFileSelector="openFileSelector">
@@ -85,8 +85,8 @@
                             </ng-template>
                         </ngx-file-drop>
 
-                        <div class="card mt-4">
-                            <div class="w-100" *ngIf="mediaImages?.RateCard">
+                        <div class="card mt-4" *ngIf="mediaImages?.RateCard">
+                            <div class="w-100">
                                 <div class="file-and-icon">
                                     <i class="bi bi-file-earmark-pdf"></i>{{mediaImages.RateCard.Name}}
                                 </div>
@@ -98,15 +98,15 @@
                 <div class="col-md-12 col-12 mb-3">
                     <div class="toggle-link-section d-flex gap-3">
                         <label class="form-label">Video</label>
-                        <mat-slide-toggle [checked]="video"
+                        <mat-slide-toggle [checked]="mediaImages?.Video?.IsFile === 1 ? 'true' : false"
                             (change)="toggleDiv($event.checked, 'video')"></mat-slide-toggle>
                     </div>
 
-                    <div class="media-file-link mb-3" *ngIf="videoToggleMediaLink">
+                    <div class="media-file-link mb-3" *ngIf="videoMediaShow">
                         <input type="text" class="form-control" formControlName="videoMediaLink" placeholder="Enter Link">
                     </div>
 
-                    <div class="card media-file-upload p-4" *ngIf="videoToggleState">
+                    <div class="card media-file-upload p-4" *ngIf="!videoMediaShow">
                         <ngx-file-drop [multiple]="false" dropZoneLabel="Drop Files Here"
                             (onFileDrop)="dropped($event, 'Video')" (onFileLeave)="fileLeave($event)" accept=".mp4">
                             <ng-template ngx-file-drop-content-tmp let-openFileSelector="openFileSelector">
@@ -114,8 +114,8 @@
                             </ng-template>
                         </ngx-file-drop>
 
-                        <div class="card mt-4">
-                            <div class="w-100" *ngIf="mediaImages?.Video">
+                        <div class="card mt-4" *ngIf="mediaImages?.Video">
+                            <div class="w-100">
                                 <div class="file-and-icon">
                                     <i class="bi bi-film"></i>{{mediaImages.Video.Name}}
                                 </div>

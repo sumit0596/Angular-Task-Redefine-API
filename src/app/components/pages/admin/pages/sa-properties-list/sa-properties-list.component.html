@@ -45,13 +45,20 @@
           <td>{{pl.PropertyName}}</td>
           <td>{{pl.SectorName}}</td>
           <td>{{pl.Address}}</td>
-          <td>{{pl.IsFeatured}}</td>
-          <td class="status"><span>{{pl.PropertyStatus}}</span></td>
+          <td class="status">
+            <mat-slide-toggle [checked]="pl.IsFeatured === 'Yes' ? checked : false"
+              (change)="toggleStatus($event.checked, pl.PropertyId)">
+              {{pl.IsFeatured}}
+            </mat-slide-toggle>
+          </td>
+          <td>
+            {{pl.PropertyStatus}}</td>
           <td class="dropdown">
             <i class="bi bi-three-dots-vertical dropdown-toggle" data-bs-toggle="dropdown"></i>
             <ul class="dropdown-menu">
               <li><a class="dropdown-item" (click)="editSection(pl.PropertyId); false" href="">Edit</a></li>
-              <li><a class="dropdown-item" (click)="viewSection(pl.PropertyId, 'selectView'); false"  href="#">View</a></li>
+              <li><a class="dropdown-item" (click)="viewSection(pl.PropertyId, 'selectView'); false" href="#">View</a>
+              </li>
             </ul>
           </td>
         </tr>

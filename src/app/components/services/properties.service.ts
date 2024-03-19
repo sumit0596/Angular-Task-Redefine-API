@@ -26,6 +26,7 @@ export class PropertiesService {
   }
   
 
+  private apiBaseUrl = `${environment.apiBaseUrl}`;
   private apiUrl = `${environment.apiBaseUrl}/property`;
   private mdaApiUrl = `${environment.apiBaseUrl}/mda/property/details`;
 
@@ -57,6 +58,11 @@ export class PropertiesService {
     return this.http.get(this.apiUrl + '/list',  { params })
   }
 
+  propertyFeatureChange(pid:number, val:any): Observable<any> {
+    let params = new HttpParams()
+    .set('ApiToken', environment.apiToken)
+    return this.http.post(this.apiUrl+ `/updatefeatured/${pid}`,val, {params:params})
+  } 
 
   mdaGetProperty(payload: any): Observable<any> {
 
@@ -207,7 +213,6 @@ export class PropertiesService {
 
   }
 
-
   propertyUnitUpdateStep1(payload:any,id:any): Observable<any>{
     let params = new HttpParams()
     .set('ApiToken', environment.apiToken);
@@ -217,6 +222,79 @@ export class PropertiesService {
 
   }
 
+  getPropertyFeatureAmenitiesForUnit(unitId:any): Observable<any>{
+    let params = new HttpParams()
+    .set('ApiToken', environment.apiToken)
 
+    return this.http.get(this.apiBaseUrl+ `/featureamenitiessectorbyproperty/list/${unitId}`, { params })
+  }
+
+  brokerCommisionUpdate(payload:any): Observable<any> {
+    let params = new HttpParams()
+    .set('ApiToken', environment.apiToken)
+
+
+    return this.http.post(this.apiUrl+ `/unit/brokercommissionupdate`,payload, { params })
+  } 
+
+  tenantIncentiveUpdate(payload:any): Observable<any> {
+    let params = new HttpParams()
+    .set('ApiToken', environment.apiToken)
+
+
+    return this.http.post(this.apiUrl+ `/unit/incentiveupdate`,payload, { params })
+  } 
+
+  propertyIncentivesList(payload:any): Observable<any> {
+    let params = new HttpParams()
+    .set('ApiToken', environment.apiToken)
+
+    
+    Object.keys(payload).forEach((key: string) => {
+      if (payload[key] != undefined) {
+        params = params.append(key, payload[key]);
+      }
+    });
+
+    return this.http.get(this.apiBaseUrl+ `/incentives/listing`, { params })
+  } 
+
+  incentivetDelete(inId:number): Observable<any> {
+    let params = new HttpParams()
+    .set('ApiToken', environment.apiToken)
+
+    return this.http.delete(this.apiBaseUrl+ `/incentives/delete/${inId}`, { params })
+  } 
+
+  incentivetDetails(inId:number): Observable<any> {
+    let params = new HttpParams()
+    .set('ApiToken', environment.apiToken)
+
+    return this.http.get(this.apiBaseUrl+ `/incentives/details/${inId}`, { params })
+  } 
+
+  propertyIncentivesAdd(payload:any): Observable<any> {
+    let params = new HttpParams()
+    .set('ApiToken', environment.apiToken)
+
+
+    return this.http.post(this.apiBaseUrl+ `/incentives/add`,payload, { params })
+  } 
+
+  propertyIncentivesUpdate(payload:any, inId:number): Observable<any> {
+    let params = new HttpParams()
+    .set('ApiToken', environment.apiToken)
+
+
+    return this.http.post(this.apiBaseUrl+ `/incentives/update/${inId}`,payload, { params })
+  } 
+
+  propertyIncentivesDelFile(payload:any, type:number): Observable<any> {
+    let params = new HttpParams()
+    .set('ApiToken', environment.apiToken)
+    .set('Type', type)
+
+    return this.http.delete(this.apiBaseUrl+ `/incentives/deletefile/${payload}`,  {params:params})
+  } 
 
 }

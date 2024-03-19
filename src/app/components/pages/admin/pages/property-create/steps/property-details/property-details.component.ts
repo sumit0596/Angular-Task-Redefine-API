@@ -8,6 +8,7 @@ import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
+import { NgxSpinnerService } from 'ngx-spinner';
 
 @Component({
   selector: 'app-property-details',
@@ -22,7 +23,8 @@ export class PropertyDetailsComponent {
   constructor(private pl: PropertiesService,
     private dropdowns: DropdownListService,
     private toastr: ToastrService,
-    private router: Router,) { }
+    private router: Router,
+    private spinner: NgxSpinnerService) { }
 
   BuildingCode: any;
   PropertyId: any;
@@ -31,6 +33,7 @@ export class PropertyDetailsComponent {
   provinceList: any[] = []
   attributes: any[] = []
   propertyDetailsSt: any;
+  propertyDetailsList: any;
   mdaStatus: any;
 
   detailsFilter: any = {
@@ -88,7 +91,7 @@ export class PropertyDetailsComponent {
   propertyDetailsForm = new FormGroup({
     BuildingCode: new FormControl(''),
     PropertyName: new FormControl('', Validators.required),
-    SectorId: new FormControl(''),
+    SectorId: new FormControl({ value: '', disabled: true }),
     Grade: new FormControl(''),
     Gla: new FormControl('', [Validators.required]),
     WebsiteUrl: new FormControl(''),
@@ -113,19 +116,22 @@ export class PropertyDetailsComponent {
 
 
   ngOnInit() {
-    this.basementChecked = false;
-
-    this.getSectorList();
-    this.getProvinceList();
-    this.getAttributeLits();
-    this.getDetailsProperty();
     const rr = this.pl.getBuildingCode()
     this.detailsFilter.BuildingCode = rr
-    this.getPropertyMdaDetails()
+    this.spinner.show();
+    setTimeout(() => {
+      this.spinner.hide();
+      this.getSectorList();
+      this.getProvinceList();
+      this.getAttributeLits();
+      this.getDetailsProperty();
+      this.getPropertyMdaDetails()
+    }, 2000)
+
   }
 
 
- 
+
   getSectorList() {
     this.dropdowns.sectorList().subscribe((sector: any) => {
       this.sectorList = sector.data
@@ -145,45 +151,26 @@ export class PropertyDetailsComponent {
   }
 
   getPropertyMdaDetails() {
-    this.pl.mdaGetProperty(this.detailsFilter).subscribe({
-      next: (mdaDetails: any) => {
-        this.propertyDetailsForm.patchValue({
-          BuildingCode: mdaDetails.data.details['BuildingCode'],
-          PropertyName: mdaDetails.data.details['PropertyName'],
-          SectorId: mdaDetails.data.details['SectorId'],
-          Grade: mdaDetails.data.details['Grade'],
-          Gla: mdaDetails.data.details['Gla'],
-          Latitude: mdaDetails.data.details['Latitude'],
-          Longitude: mdaDetails.data.details['Longitude'],
-          City: mdaDetails.data.details['City'],
-          PostCode: mdaDetails.data.details['PostCode'],
-          Suburb: mdaDetails.data.details['Suburb'],
-          Address: mdaDetails.data.details['Address'],
-          Province: mdaDetails.data.province['Name'],
-        })
-      },
-      error: (error: HttpErrorResponse) => {
-        console.log(error);
-
-        if (error.status === 400) {
-
-          // this.ngOnDestroy();
+    if (this.detailsFilter.BuildingCode !== null) {
+      this.pl.mdaGetProperty(this.detailsFilter).subscribe({
+        next: (mdaDetails: any) => {
+          this.propertyDetailsForm.patchValue(mdaDetails.data.details)
+        },
+        error: (error: HttpErrorResponse) => {
+          if (error.status === 400) {
+          }
         }
-
-      }
-    })
+      })
+    }
   }
 
 
   getFormData() {
-    // console.log(this.propertyDetailsForm.value);
     if (this.propertyDetailsForm.valid) {
       this.pl.addPropertyStep1(this.propertyDetailsForm.value).subscribe((res: any) => {
-        // console.log(res)
         this.mdaStatus = res.status;
         if (res.status === 'success') {
           localStorage.setItem('PropertyId', res.data.PropertyId);
-          // this.ngOnDestroy();
           this.getDetailsProperty();
           this.toastr.success(res.message);
           this.nextTabSwitch.emit(this.activatedTabsIndex);
@@ -195,10 +182,43 @@ export class PropertyDetailsComponent {
 
   }
 
-  validateForm() {
-    Object.values(this.propertyDetailsForm.controls).forEach(control => {
-      control.markAsTouched();
-    });
+
+  getDetailsProperty() {
+    const propertyId = localStorage.getItem('PropertyId');
+    if (propertyId !== null) {
+      localStorage.removeItem('buildingCode')
+      this.pl.propertyDetails(propertyId).subscribe((pd: any) => {
+        this.propertyDetailsSt = pd.status;
+        this.propertyDetailsList = pd.data.details
+
+        this.propertyDetailsForm.patchValue(pd.data.details)
+
+        this.atributesSelect = [];
+        pd.data['PropertyAttributes'].forEach((PropertyAttributes: any) => {
+          this.atributesSelect.push(PropertyAttributes.Id);
+        });
+
+        const BasementBays = pd.data?.details['BasementBays']
+        const ShadedBays = pd.data?.details['ShadedBays']
+        const OpenBays = pd.data?.details['OpenBays']
+
+
+        if (BasementBays !== '0.00') {
+          this.basementChecked = true;
+          this.propertyDetailsForm.get('BasementBays')?.enable();
+        }
+
+        if (ShadedBays !== '0.00') {
+          this.shadedChecked = true;
+          this.propertyDetailsForm.get('ShadedBays')?.enable();
+        }
+
+        if (OpenBays !== '0.00') {
+          this.openBaysChecked = true;
+          this.propertyDetailsForm.get('OpenBays')?.enable();
+        }
+      })
+    }
   }
 
   itemSelected(e: any) {
@@ -238,72 +258,11 @@ export class PropertyDetailsComponent {
 
   }
 
-  getDetailsProperty() {
-    const propertyId = localStorage.getItem('PropertyId');
-    this.pl.propertyDetails(propertyId).subscribe((pd: any) => {
-      // console.log(pd);
-      this.propertyDetailsSt = pd.status;
-      this.propertyDetailsForm.patchValue({
-        BuildingCode: pd.data.details['BuildingCode'],
-        PropertyName: pd.data.details['PropertyName'],
-        SectorId: pd.data.details['SectorId'],
-        WebsiteUrl: pd.data.details['WebsiteUrl'],
-        Grade: pd.data.details['Grade'],
-        Gla: pd.data.details['Gla'],
-        Latitude: pd.data.details['Latitude'],
-        Longitude: pd.data.details['Longitude'],
-        City: pd.data.details['City'],
-        PostCode: pd.data.details['PostCode'],
-        Suburb: pd.data.details['Suburb'],
-        Address: pd.data.details['Address'],
-        Province: pd.data.details['Province'],
-        AnchorTenant: pd.data.details['AnchorTenant'],
-        TotalTenants: pd.data.details['TotalTenants'],
-        AnnualFootCount: pd.data.details['AnnualFootCount'],
-        PropertyDescription: pd.data.details['PropertyDescription'] || '',
-        ParkingRatio: pd.data.details['ParkingRatio'] || '',
-        BasementBays: pd.data.details['BasementBays'] || '',
-        ShadedBays: pd.data.details['ShadedBays'] || '',
-        OpenBays: pd.data.details['OpenBays'] || '',
-        PropertyAttributes: '',
-      })
-
-      this.atributesSelect = [];
-      pd.data['PropertyAttributes'].forEach((PropertyAttributes: any) => {
-        this.atributesSelect.push(PropertyAttributes.Id);
-      });
-
-      const BasementBays = pd.data?.details['BasementBays']
-      const ShadedBays = pd.data?.details['ShadedBays']
-      const OpenBays = pd.data?.details['OpenBays']
-
-
-      if (BasementBays !== '0.00') {
-        this.basementChecked = true;
-        this.propertyDetailsForm.get('BasementBays')?.enable();
-      }
-
-      if (ShadedBays !== '0.00') {
-        this.shadedChecked = true;
-        this.propertyDetailsForm.get('ShadedBays')?.enable();
-      }
-
-      if (OpenBays !== '0.00') {
-        this.openBaysChecked = true;
-        this.propertyDetailsForm.get('OpenBays')?.enable();
-      }
-
-    })
-  }
-
-
 
   updateFormData() {
-    // console.log(this.propertyDetailsForm.value);
     const propertyId = localStorage.getItem('PropertyId');
     if (this.propertyDetailsForm.valid) {
       this.pl.updatePropertyStep1(this.propertyDetailsForm.value, propertyId).subscribe((res: any) => {
-        // console.log(res)
         this.mdaStatus = res.status;
         if (res.status === 'success') {
           this.toastr.success(res.message);
@@ -314,6 +273,14 @@ export class PropertyDetailsComponent {
       this.validateForm();
     }
   }
+
+
+  validateForm() {
+    Object.values(this.propertyDetailsForm.controls).forEach(control => {
+      control.markAsTouched();
+    });
+  }
+
 
 
 }
