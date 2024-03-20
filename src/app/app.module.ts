@@ -18,6 +18,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AdminModule } from './components/pages/admin/admin.module';
 import {NgxPaginationModule} from 'ngx-pagination';
 import { NgxSpinnerModule } from "ngx-spinner";
+import {MatProgressBarModule} from '@angular/material/progress-bar';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 
 const routes: Routes = [
   { path: '', component: LoginComponent },
@@ -44,6 +46,8 @@ const routes: Routes = [
     ReactiveFormsModule,
     AdminModule,
     NgxPaginationModule,
+    MatProgressSpinnerModule,
+    MatProgressBarModule,
     NgxSpinnerModule.forRoot({ type: 'ball-scale-multiple' }), 
     ToastrModule.forRoot(),
   ],
