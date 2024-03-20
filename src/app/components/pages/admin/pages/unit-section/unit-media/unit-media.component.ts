@@ -1,8 +1,9 @@
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { NgxFileDropEntry, FileSystemFileEntry, FileSystemDirectoryEntry } from 'ngx-file-drop';
+import { NgxSpinnerService } from 'ngx-spinner';
 import { ToastrService } from 'ngx-toastr';
 import { PropertiesService } from 'src/app/components/services/properties.service';
 
@@ -13,10 +14,12 @@ import { PropertiesService } from 'src/app/components/services/properties.servic
 })
 export class UnitMediaComponent {
 
+  @Output() nextTabSwitch = new EventEmitter()
 
   constructor(private pl: PropertiesService,
     private fb: FormBuilder,
-    private toastr: ToastrService){
+    private spinner: NgxSpinnerService,
+    private toastr: ToastrService) {
     this.propertyId = localStorage.getItem('PropertyId')
     this.unitId = localStorage.getItem('unitId')
   }
@@ -24,17 +27,22 @@ export class UnitMediaComponent {
 
   ngOnInit() {
     this.featureUnitForm()
-    this.getUnitMedia()
-    
+    this.spinner.show();
+    setTimeout(() => {
+      this.getUnitMedia()
+      this.spinner.hide();
+    }, 2000)
   }
 
   public files: NgxFileDropEntry[] = [];
 
-  propertyId:any;
+  activatedTabsIndex: number = 2;
+
+  propertyId: any;
   unitId: any;
 
   mediaImages: any;
-  mediaForm!:FormGroup
+  mediaForm!: FormGroup
   toggleInput: boolean = true;
 
   toggleFieldVideo: boolean = false;
@@ -53,9 +61,9 @@ export class UnitMediaComponent {
   mediaLinkObj: any = {
     PropertyId: '',
     PropertyUnitId: '',
-    Links:[]
+    Links: []
   }
-  
+
   dropped(files: NgxFileDropEntry[], arrgs: string) {
     this.files = files
     for (const droppedFile of files) {
@@ -89,7 +97,7 @@ export class UnitMediaComponent {
   }
 
 
-  
+
   fileLeave(e: any) {
     // console.log('fileleave',e);
   }
@@ -130,28 +138,23 @@ export class UnitMediaComponent {
     })
 
   }
-  
 
-  getUnitMedia(){
+
+  getUnitMedia() {
     this.pl.propertyUnitDetails(this.unitId).subscribe({
       next: (res: any) => {
-      console.log(res);
-      this.mediaImages = res.data.media
-      
-      this.mediaForm.patchValue({
-        videoMediaLink: res.data?.media.Video['Url'] ,
-        floorPlanMediaLink: res.data?.media.FloorPlan['Url'],
-      })
+        this.mediaImages = res.data.media
+        this.mediaForm.patchValue({
+          videoMediaLink: this.mediaImages?.Video?.IsFile === 0 ? this.mediaImages?.Video['Url'] : null,
+          floorPlanMediaLink: this.mediaImages?.FloorPlan?.IsFile === 0 ? this.mediaImages?.FloorPlan['Url'] : null,
+        })
+        if (this.mediaImages?.Video?.IsFile == 0) {
+          this.togleInputField(true, 'video')
+        }
 
-      
-      if(this.mediaImages.Video.IsFile == 0){
-        this.togleInputField(true, 'video')
-      }
-
-      if(this.mediaImages.FloorPlan.IsFile == 0){
-        this.togleInputField(true, 'floor')
-      }
-
+        if (this.mediaImages?.FloorPlan?.IsFile == 0) {
+          this.togleInputField(true, 'floor')
+        }
       }, error: (error: HttpErrorResponse) => {
         console.log(error);
       }
@@ -159,7 +162,7 @@ export class UnitMediaComponent {
   }
 
 
-  featureUnitForm(){
+  featureUnitForm() {
     this.mediaForm = this.fb.group({
       videoMediaLink: new FormControl(''),
       floorPlanMediaLink: new FormControl(''),
@@ -184,24 +187,25 @@ export class UnitMediaComponent {
       });
     }
 
-   this.mediaLinkUpload(this.mediaLinkObj);
-    
+    this.mediaLinkUpload(this.mediaLinkObj);
+
   }
 
-  mediaLinkUpload(mediaLinks:any){
+  mediaLinkUpload(mediaLinks: any) {
     this.pl.uploadPropertyMediaLink(mediaLinks).subscribe((mdl: any) => {
       if (mdl.status === 'success') {
         this.toastr.success(mdl.message);
+        this.nextTabSwitch.emit(this.activatedTabsIndex);
         this.ngOnInit();
       }
     })
   }
 
-  togleInputField(et:any, str:any){
-    if(str === 'video'){
+  togleInputField(et: any, str: any) {
+    if (str === 'video') {
       this.toggleFieldVideo = et
     }
-    if(str === 'floor'){
+    if (str === 'floor') {
       this.toggleFieldFloor = et
     }
   }

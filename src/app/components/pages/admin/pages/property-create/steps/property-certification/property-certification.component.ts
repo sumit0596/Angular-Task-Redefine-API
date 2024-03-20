@@ -7,6 +7,7 @@ import { DateAdapter } from '@angular/material/core';
 import { DatePipe } from '@angular/common';
 import { PropertiesService } from 'src/app/components/services/properties.service';
 import { ToastrService } from 'ngx-toastr';
+import { NgxSpinnerService } from 'ngx-spinner';
 
 
 @Component({
@@ -65,6 +66,7 @@ export class PropertyCertificationComponent {
     private pl: PropertiesService,
     private datePipe: DatePipe,
     private toastr: ToastrService,
+    private spinner: NgxSpinnerService,
     private dateAdapter: DateAdapter<Date>) {
     this.dateAdapter.setLocale('en-GB')
 
@@ -90,13 +92,17 @@ export class PropertyCertificationComponent {
 
 
   ngOnInit() {
-    this.getPropertyData();
     this.ratings;
     this.levels;
     this.epcRating;
     this.getFields();
+    this.getPropertyData();
     this.getBuildingForm();
-    this.getPropertyConfrim()
+    this.spinner.show();
+        setTimeout(() => {
+      this.spinner.hide();
+
+    }, 2000)
   }
 
 
@@ -116,7 +122,6 @@ export class PropertyCertificationComponent {
       this.propertyId = s.data.details.PropertyId
       this.esgData = s.data.esgfeatures
 
-
       this.esgData.forEach((data: any, index: number) => {
         const ratingControl = this.esgForm.get('Rating') as FormArray;
         const levelTypeControl = this.esgForm.get('LevelType') as FormArray;
@@ -133,13 +138,10 @@ export class PropertyCertificationComponent {
         validityStartDateControl.at(index)?.patchValue(data.ValidityStartDate);
         validityEndDateControl.at(index)?.patchValue(data.ValidityEndDate);
         additionalInformationControl.at(index)?.patchValue(data.AdditionalInformation);
-
         this.getFileFrom(imgFile, index)
-
-        
+        this.toggleDiv(true, index)
+        this.toggleSubDiv(true, index)
       })
-
-
     })
   }
 
@@ -151,7 +153,6 @@ export class PropertyCertificationComponent {
       this.htmlFields.forEach((data: any) => {
 
         data.features.forEach((ff: any) => {
-
 
           (this.esgForm.get('Rating') as FormArray).push(new FormControl(null));
           (this.esgForm.get('LevelType') as FormArray).push(new FormControl(null));
@@ -172,22 +173,17 @@ export class PropertyCertificationComponent {
 
 
   dropped(files: NgxFileDropEntry[], fi: number, arrgs: string) {
-
     this.files = files;
     this.fileArrays[fi] = [];
     for (const droppedFile of files) {
       if (droppedFile.fileEntry.isFile) {
         const fileEntry = droppedFile.fileEntry as FileSystemFileEntry;
-
         fileEntry.file((file: File) => {
-
           this.fileArrays[fi].push(droppedFile);
-
           const formData = new FormData();
           formData.append('File', file, file.name);
           formData.append('PropertyId', this.propertyId);
           formData.append('Type', arrgs);
-
           this.uploadMedia(formData, fi);
         })
       }
@@ -291,26 +287,5 @@ export class PropertyCertificationComponent {
     this.subFields[checkSection] = checked;
   }
 
-
-  getPropertyConfrim() {
-    const propertyId = localStorage.getItem('PropertyId');
-
-    this.pl.propertyConfirm(propertyId).subscribe((cnf: any) => {
-
-      this.esgConf = cnf.data.esgfeatures;
-
-      this.esgConf.forEach((data: any, index: number) => {
-      
-        data.SubFeatures.map((k: any, v: any) => {
-          if (k.Rating !== '') {
-            this.dynamicFieldStates[index] = true;
-            this.subFields[k.EsgFeaturesId - 1] = true;
-           
-          }
-        })
-
-      })
-    })
-  }
 
 }

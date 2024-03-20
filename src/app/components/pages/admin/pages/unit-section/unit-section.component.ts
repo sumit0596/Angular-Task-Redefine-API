@@ -15,6 +15,12 @@ export class UnitSectionComponent {
   onTabChange(tb: number) {
     this.activatedTabsIndex = tb;
   }
-
+  
+  onTabChangeChild(rr: number) {
+    this.onTabChange(rr)
+    this.changeTab.activeTab = rr
+    // console.log(this.activatedTabsIndex); 
+    
+  }
 
 }

@@ -5,6 +5,7 @@ import { DropdownListService } from 'src/app/components/services/dropdown-list.s
 import { AngularEditorConfig } from '@kolkov/angular-editor';
 import { FormGroup, FormControl, FormArray } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
+import { NgxSpinnerService } from 'ngx-spinner';
 
 @Component({
   selector: 'app-property-features',
@@ -15,7 +16,8 @@ export class PropertyFeaturesComponent {
 
   constructor(private pl: PropertiesService,
     private fieldslist: DropdownListService,
-    private toastr: ToastrService) {
+    private toastr: ToastrService,
+    private spinner: NgxSpinnerService) {
   }
 
   @Output() nextTabSwitch = new EventEmitter()
@@ -26,7 +28,7 @@ export class PropertyFeaturesComponent {
   propertyId: any
   htmlFieldLabel: any
 
-  dynamicFieldStates: { [key: number]: boolean } = {};
+  inputFields: { [key: number]: boolean } = {};
 
 
   objj: any = {
@@ -35,7 +37,7 @@ export class PropertyFeaturesComponent {
   }
 
   dataSet: any[] = [];
-  fa: any
+  features: any
 
   editorConfig: AngularEditorConfig = {
     editable: true,
@@ -70,10 +72,6 @@ export class PropertyFeaturesComponent {
     ]
   };
 
-
-
-
-
   featureForm = new FormGroup({
     FeatureAmenitiesAddtionalDetails: new FormControl(''),
     Value: new FormArray([]),
@@ -81,25 +79,30 @@ export class PropertyFeaturesComponent {
 
 
   ngOnInit() {
-    this.getPropertyData();
+    this.spinner.show();
+    setTimeout(() => {
+      this.spinner.hide();
+      this.getPropertyData();
+    }, 2000)
   }
 
   getPropertyData() {
     this.pl.propertyFetch().subscribe((s: any) => {
       this.sectorId = s.data.details.SectorId
       this.propertyId = s.data.details.PropertyId
-      this.fa = s.data.featureamenities.features
-      // console.log(this.fa);
+      this.features = s.data.featureamenities.features
+      console.log(this.features);
 
-      this.fa.forEach((ff: any) => {
+      this.features.forEach((ff: any) => {
         if (ff.Checked === 1) {
-          this.dynamicFieldStates[ff.Id] = true;
+          this.inputFields[ff.Id] = true;
         }
       })
 
       this.featureForm.patchValue(s.data.featureamenities)
+      this.featureForm.patchValue(s.data.featureamenities.features)
 
-      this.getValues(this.fa.Id);
+      this.getValues(this.features.Id);
       this.getFeatureAmenitiesSector();
     });
 
@@ -108,7 +111,7 @@ export class PropertyFeaturesComponent {
 
   getValues(FeaturesAmenitiesSectorId: number) {
 
-    const matchingData = this.fa.find((data: any) => data.Id === FeaturesAmenitiesSectorId);
+    const matchingData = this.features.find((data: any) => data.Id === FeaturesAmenitiesSectorId);
 
     if (matchingData) {
       return matchingData.Value;
@@ -137,12 +140,11 @@ export class PropertyFeaturesComponent {
 
 
   toggleDiv(checked: any, checkSection: number, index: any) {
-    this.dynamicFieldStates[checkSection] = checked;
+    this.inputFields[checkSection] = checked;
 
   }
 
   featureData() {
-
 
     this.dataSet.forEach((data, index) => {
 
@@ -153,16 +155,13 @@ export class PropertyFeaturesComponent {
     });
 
     const selectedData = this.dataSet.filter((data, index) => {
-      return this.dynamicFieldStates[data.FeaturesAmenitiesSectorId];
+      return this.inputFields[data.FeaturesAmenitiesSectorId];
 
     });
-
 
     this.objj.FeatureAmenitiesAddtionalDetails = this.featureForm.value.FeatureAmenitiesAddtionalDetails
     this.objj.FeaturesAmenitiesSectorId = selectedData
     this.objj.PropertyId = this.propertyId
-
-    // console.log(this.objj);
 
     this.pl.addPropertyFeatureAmenities(this.objj).subscribe((res: any) => {
       if (res.status === 'success') {

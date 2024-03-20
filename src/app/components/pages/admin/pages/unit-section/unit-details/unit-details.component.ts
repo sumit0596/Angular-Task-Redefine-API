@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { AngularEditorConfig } from '@kolkov/angular-editor';
 import { DropdownListService } from 'src/app/components/services/dropdown-list.service';
@@ -9,6 +9,7 @@ import { MatDatepickerInputEvent } from '@angular/material/datepicker';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
+import { NgxSpinnerService } from 'ngx-spinner';
 
 @Component({
   selector: 'app-unit-details',
@@ -18,12 +19,15 @@ import { Router } from '@angular/router';
 })
 export class UnitDetailsComponent {
 
+  @Output() nextTabSwitch = new EventEmitter()
+
   constructor(private dw: DropdownListService,
     private pl: PropertiesService,
     private fb: FormBuilder,
     private datePipe: DatePipe,
     private toastr: ToastrService,
     private router: Router,
+    private spinner: NgxSpinnerService,
     private dateAdapter: DateAdapter<Date>) {
     this.unitId = localStorage.getItem('unitId')
     this.propertyId = localStorage.getItem('PropertyId')
@@ -31,12 +35,18 @@ export class UnitDetailsComponent {
   }
 
   ngOnInit() {
-    this.getIncentivesListing();
-    this.getUnitDetails();
     this.unitForm();
+    this.spinner.show();
+    setTimeout(() => {
+      this.spinner.hide();
+      this.getIncentivesListing();
+      this.getUnitDetails();
+    }, 2000)
+
   }
 
 
+  activatedTabsIndex: number = 1;
 
   unitCreateform!: FormGroup;
   unitId: any;
@@ -234,6 +244,7 @@ export class UnitDetailsComponent {
           console.log(add);
           if (add.status === 'success') {
             this.toastr.success(add.message);
+            this.nextTabSwitch.emit(this.activatedTabsIndex);
           }
         }, error: (error: HttpErrorResponse) => {
           console.log(error);
@@ -248,6 +259,7 @@ export class UnitDetailsComponent {
         console.log(update);
         if (update.status === 'success') {
           this.toastr.success(update.message);
+          this.nextTabSwitch.emit(this.activatedTabsIndex);
         }
       }, error: (error: HttpErrorResponse) => {
         console.log(error);

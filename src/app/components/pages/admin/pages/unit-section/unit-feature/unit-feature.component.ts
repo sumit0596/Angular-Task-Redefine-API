@@ -3,6 +3,7 @@ import { Component } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AngularEditorConfig } from '@kolkov/angular-editor';
+import { NgxSpinnerService } from 'ngx-spinner';
 import { ToastrService } from 'ngx-toastr';
 import { PropertiesService } from 'src/app/components/services/properties.service';
 
@@ -12,12 +13,13 @@ import { PropertiesService } from 'src/app/components/services/properties.servic
   styleUrls: ['./unit-feature.component.css']
 })
 export class UnitFeatureComponent {
-  
+
 
 
   constructor(private pl: PropertiesService,
     private toastr: ToastrService,
     private router: Router,
+    private spinner: NgxSpinnerService,
     private fb: FormBuilder) {
     this.propertyId = localStorage.getItem('PropertyId')
     this.unitId = localStorage.getItem('unitId')
@@ -30,15 +32,15 @@ export class UnitFeatureComponent {
     FeaturesAmenitiesSectorId: ''
   }
 
-  propertyId:any;
+  propertyId: any;
   featureForm!: FormGroup;
-  htmlFieldLabel:any;
+  htmlFieldLabel: any;
   checked: boolean = false;
   unitId: any;
-  dataSet:any []=[];
+  dataSet: any[] = [];
   sectionCheck: { [key: number]: boolean } = {};
 
-  
+
   editorConfig: AngularEditorConfig = {
     editable: true,
     spellcheck: true,
@@ -71,14 +73,18 @@ export class UnitFeatureComponent {
       ]
     ]
   };
-  
+
   ngOnInit() {
+    this.spinner.show();
     this.featureUnitForm();
-    this.getFeatureAmenitiesByUnit();
-    this.getUnitDetails();
+    setTimeout(() => {
+      this.spinner.hide();
+      this.getFeatureAmenitiesByUnit();
+      this.getUnitDetails();
+    }, 2000)
   }
 
-  featureUnitForm(){
+  featureUnitForm() {
     this.featureForm = this.fb.group({
       FeatureAmenitiesAddtionalDetails: new FormControl(''),
       FeaturesAmenitiesSectorId: new FormArray([]),
@@ -90,7 +96,7 @@ export class UnitFeatureComponent {
     this.pl.getPropertyFeatureAmenitiesForUnit(this.propertyId).subscribe({
       next: (res: any) => {
         this.htmlFieldLabel = res.data
-        this.htmlFieldLabel.forEach((ff: any,index: number) => {
+        this.htmlFieldLabel.forEach((ff: any, index: number) => {
           (this.featureForm.get('Value') as FormArray).push(new FormControl(null));
           const vc = (this.featureForm.get('Value') as FormArray).at(index);
           vc.patchValue(ff.Value)
@@ -108,7 +114,7 @@ export class UnitFeatureComponent {
     if (this.unitId !== null) {
       this.pl.propertyUnitDetails(this.unitId).subscribe({
         next: (res: any) => {
-         this.featureForm.patchValue(res.data.details)
+          this.featureForm.patchValue(res.data.details)
         }, error: (error: HttpErrorResponse) => {
           console.log(error);
         }
@@ -116,11 +122,11 @@ export class UnitFeatureComponent {
     }
   }
 
-  toggleDiv(e:any, id:any){
+  toggleDiv(e: any, id: any) {
     this.sectionCheck[id] = e.checked
   }
 
-  featureData(){
+  featureData() {
     this.dataSet.forEach((data, index) => {
 
       const control = this.featureForm.get('Value') as FormArray;
@@ -133,15 +139,16 @@ export class UnitFeatureComponent {
     this.objj.FeaturesAmenitiesSectorId = this.dataSet
     this.objj.PropertyId = this.propertyId
     this.objj.PropertyUnitId = this.unitId
-    
+
     this.updateFeatureAmenitis(this.objj)
   }
 
-  updateFeatureAmenitis(getUpdatedData:any){
+  updateFeatureAmenitis(getUpdatedData: any) {
     this.pl.addPropertyFeatureAmenities(getUpdatedData).subscribe({
-      next : (update:any) =>{
+      next: (update: any) => {
         if (update.status === 'success') {
           this.toastr.success(update.message);
+          this.router.navigate(['admin/view-property']);
         }
       }, error: (error: HttpErrorResponse) => {
         console.log(error);

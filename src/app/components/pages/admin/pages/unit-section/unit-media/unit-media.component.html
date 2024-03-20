@@ -41,7 +41,7 @@
                 <div class="col-md-12 col-12 mb-3">
                     <div class="toggle-link-section d-flex gap-3">
                         <label class="form-label">Video</label>
-                        <mat-slide-toggle [checked]="mediaImages?.Video.IsFile == 0 ? toggleInput : false"
+                        <mat-slide-toggle [checked]="this.mediaImages?.Video?.IsFile === 0 ? 'true' : false"
                             (change)="togleInputField($event.checked, 'video')"></mat-slide-toggle>
                     </div>
 
@@ -60,21 +60,21 @@
                                 </ng-template>
                             </ngx-file-drop>
                         </ng-container>
-                        <div class="card mt-4">
-                            <div class="w-100" *ngIf="mediaImages?.Video">
+                        <div class="card mt-4" *ngIf="mediaImages?.Video">
+                            <div class="w-100">
                                 <div class="file-and-icon">
-                                    <i class="bi bi-film"></i>{{mediaImages.Video.Name}}
+                                    <i class="bi bi-film"></i>{{mediaImages?.Video?.Name}}
                                 </div>
                             </div>
                         </div>
-
                     </div>
+                    
                 </div>
 
                 <div class="col-md-12 col-12 mb-3">
                     <div class="toggle-link-section d-flex gap-3">
                         <label class="form-label">Floor Plan</label>
-                        <mat-slide-toggle [checked]="mediaImages?.FloorPlan.IsFile == 0 ? toggleInput : false"
+                        <mat-slide-toggle [checked]="this.mediaImages?.FloorPlan?.IsFile === 0 ? 'true' : false"
                             (change)="togleInputField($event.checked, 'floor')"></mat-slide-toggle>
                     </div>
 
@@ -91,8 +91,8 @@
                             </ng-template>
                         </ngx-file-drop>
 
-                        <div class="card mt-4">
-                            <div class="w-100" *ngIf="mediaImages?.FloorPlan">
+                        <div class="card mt-4" *ngIf="mediaImages?.FloorPlan">
+                            <div class="w-100">
                                 <div class="file-and-icon">
                                     <i class="bi bi-file-earmark-pdf"></i>{{mediaImages.FloorPlan.Name}}
                                 </div>

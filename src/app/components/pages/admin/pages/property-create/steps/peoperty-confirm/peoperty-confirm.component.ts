@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { NgxSpinnerService } from 'ngx-spinner';
 import { PropertiesService } from 'src/app/components/services/properties.service';
 
 @Component({
@@ -9,31 +10,32 @@ import { PropertiesService } from 'src/app/components/services/properties.servic
 })
 export class PeopertyConfirmComponent {
 
-  constructor(private pl : PropertiesService,
-    private route: ActivatedRoute){}
+  constructor(private pl: PropertiesService,
+    private route: ActivatedRoute,
+    private spinner: NgxSpinnerService) { }
 
-  getDetailsData:any ;
-  getPropertyAttributes:any
-  getPropertyMedia:any
-  getPropertyEsg:any
-  getPropertyFeatureamenities:any;
+  getDetailsData: any;
+  getPropertyAttributes: any
+  getPropertyMedia: any
+  getPropertyEsg: any
+  getPropertyFeatureamenities: any;
 
-  viewUnitPage : boolean = false;
+  viewUnitPage: boolean = false;
 
-  ngOnInit(){
-    this.getPropertyConfrim()
+  ngOnInit() {
+    this.spinner.show();
+    setTimeout(() => {
+      this.spinner.hide();
+      this.getPropertyConfrim()
+    }, 2000)
     this.viewUnit();
-    
   }
 
-
-
-
-  getPropertyConfrim(){
+  getPropertyConfrim() {
     const propertyId = localStorage.getItem('PropertyId');
 
-    this.pl.propertyConfirm(propertyId).subscribe((cnf:any)=>{
-     
+    this.pl.propertyConfirm(propertyId).subscribe((cnf: any) => {
+
       this.getDetailsData = cnf.data.details
       this.getPropertyAttributes = cnf.data.attributes
       this.getPropertyFeatureamenities = cnf.data.featureamenities
@@ -50,15 +52,14 @@ export class PeopertyConfirmComponent {
   }
 
 
-  viewUnit(){
+  viewUnit() {
     this.route.queryParams.subscribe(params => {
       if (params['pageData']) {
         const pageData = JSON.parse(params['pageData']);
-        if(pageData === 'selectView'){
+        if (pageData === 'view') {
           this.viewUnitPage = true
         }
       }
-    
     })
   }
 }

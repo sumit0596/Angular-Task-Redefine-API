@@ -9,10 +9,10 @@
                 <div class="mb-3">
                     <div class="d-flex gap-2 label-toggle">
                         <label class="form-label">{{fields.Title}}</label>
-                        <mat-slide-toggle  [checked]="dynamicFieldStates[fields.FeaturesAmenitiesSectorId]"
+                        <mat-slide-toggle  [checked]="inputFields[fields.FeaturesAmenitiesSectorId]"
                         (change)="toggleDiv($event.checked,  fields.FeaturesAmenitiesSectorId, i)"></mat-slide-toggle>
                     </div>
-                   <div class="description" formArrayName="Value" *ngIf="dynamicFieldStates[fields.FeaturesAmenitiesSectorId]">
+                   <div class="description" formArrayName="Value" *ngIf="inputFields[fields.FeaturesAmenitiesSectorId]">
                     <ng-container>
                         <input type="text" [ngModel]="getValues(fields.FeaturesAmenitiesSectorId)" class="form-control" formControlName="{{i}}"> 
                     </ng-container>
