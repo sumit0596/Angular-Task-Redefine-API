@@ -1,0 +1,103 @@
+<div class="col-md-12 mt-4">
+    <div class="header-section">
+        <h1 class="admin-title">{{pageTitle}}</h1>
+        <div class="d-flex align-items-center gap-3">
+            <div class="filter-section" *ngIf="filterChecked">
+                <button class="filterBtn" data-bs-toggle="modal" data-bs-target="#filterSection"><i
+                        class="bi bi-funnel-fill"></i></button>
+            </div>
+            <div class="download-section">
+                <button class="downloadBtn" (click)="exportData()"><i class="bi bi-box-arrow-in-right"></i></button>
+            </div>
+            <div class="action-section input-group search-section">
+                <form [formGroup]="searchForm" (ngSubmit)="searchList()">
+                    <input type="text" formControlName="Search" class="form-control" placeholder="Enter Keyword">
+                    <button class="clearbtn" (click)="onClearSearch()" *ngIf="searchClear"><i
+                            class="bi bi-x"></i></button>
+                    <button class="btn btn-outline-secondary search" type="submit"><i class="bi bi-search"></i></button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <hr>
+</div>
+<div class="col-md-12">
+    <table class="table table-striped properties-table">
+        <thead class="mb-3">
+            <th *ngFor="let th of tableHeaderTitle">{{th.colVal}}</th>
+            <th>Action</th>
+        </thead>
+        <tbody>
+            <tr
+                *ngFor="let td of tableBodyData | paginate: { itemsPerPage: perPage, currentPage: PageNo, totalItems: totalCount }">
+                <td *ngFor="let th of tableHeaderTitle">
+                    <div class="d-flex aling-items-center gap-2">
+                        {{td[th.colId]}}
+                        <mat-slide-toggle *ngIf="th.colId === 'IsFeatured' ||th.colId ==='UnitStatus'" 
+                        [checked]="td.IsFeatured === 'Yes' ? 'true' : false 
+                        || td.UnitStatus === 'Yes' ? 'true' : false"
+                            (change)="toggleStatus($event.checked, td)">
+                        </mat-slide-toggle>
+                    </div>
+                </td>
+                <td class="dropdown">
+                    <i data-bs-toggle="dropdown" class="bi bi-three-dots-vertical dropdown-toggle"></i>
+                    <ul class="dropdown-menu">
+                        <li><a href="#" (click)="onEdit(td.PropertyId); false" class="dropdown-item">Edit</a></li>
+                        <li><a href="#" (click)="onView(td.PropertyId); false" class="dropdown-item">View</a></li>
+                        <li><a href="#" (click)="onDelete(td.PropertyId); false" class="dropdown-item text-danger">Delete</a></li>
+                    </ul>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+<div class="col-md-12 pegination">
+    <pagination-controls [autoHide]="true" (pageChange)="onPageChange($event)"></pagination-controls>
+</div>
+
+<!-- Filter Modal -->
+<div class="modal fade" id="filterSection" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Filter</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form [formGroup]="filterForm" (ngSubmit)="filterSection()">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="" class="form-label">Sector</label>
+                        <ng-select [multiple]="true" (change)="sectorSelect($event)" formControlName="SectorId">
+                            <ng-option *ngFor="let listItem of dropdownList"
+                                [value]="listItem.Id">{{listItem.Name}}</ng-option>
+                        </ng-select>
+                    </div>
+                    <ng-container *ngIf="type === '2'">
+                        <div class="mb-3">
+                            <label for="" class="form-label">Holding Company</label>
+                            <ng-select [multiple]="false" (change)="holdingSelect($event)"
+                                formControlName="HoldingCompanyId">
+                                <ng-option *ngFor="let listItem of holdingdpList"
+                                    [value]="listItem.Id">{{listItem.Name}}</ng-option>
+                            </ng-select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="" class="form-label">Completion Type</label>
+                            <ng-select [multiple]="false" (change)="completionSelect($event)"
+                                formControlName="CompletionType">
+                                <ng-option *ngFor="let listItem of completionTypeList"
+                                    [value]="listItem.Id">{{listItem.Name}}</ng-option>
+                            </ng-select>
+                        </div>
+                    </ng-container>
+                </div>
+                <div class="modal-footer modal-footer-btn">
+                    <button type="button" class="btn btn-secondary clearbtn" (click)="clearSectorSelect()"
+                        data-bs-dismiss="modal">Clear</button>
+                    <button type="submit" class="btn btn-primary" data-bs-dismiss="modal">Save changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

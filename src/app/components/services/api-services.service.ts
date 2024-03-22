@@ -16,6 +16,7 @@ export class ApiServicesService {
   private areaUrl = `${environment.apiBaseUrl}/area/list`;
   private personalIntUrl = `${environment.apiBaseUrl}/personal_interest/list`;
   private subscriptionIntUrl = `${environment.apiBaseUrl}/subscription_preference/list`;
+  private holdingListUrl = `${environment.apiBaseUrl}/holdingcompany/list`;
 
 
 
@@ -38,7 +39,8 @@ export class ApiServicesService {
     const areas = this.http.get<any>(this.areaUrl, { params });
     const personalInterest = this.http.get<any>(this.personalIntUrl, { params });
     const subscription = this.http.get<any>(this.subscriptionIntUrl, { params });
-    return forkJoin([sector, areas, personalInterest,subscription]);
+    const holdingList = this.http.get<any>(this.holdingListUrl, { params });
+    return forkJoin([sector, areas, personalInterest,subscription,holdingList]);
   }
 
   

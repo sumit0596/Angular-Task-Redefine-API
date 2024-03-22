@@ -5,58 +5,16 @@
     </div>
   </div>
   <div class="row card">
-    <div class="col-md-12 mt-4">
-      <div class="header-section">
-        <h1 class="admin-title">Attributes</h1>
-        <div class=" d-flex align-items-center gap-3">
-          <div class="filter-section">
-            <button class="filterBtn" data-bs-toggle="modal" data-bs-target="#filterSection"><i
-                class="bi bi-funnel-fill"></i></button>
-          </div>
-          <div class="download-section">
-            <button class="downloadBtn"><i class="bi bi-box-arrow-in-right"></i></button>
-          </div>
-          <div class="action-section input-group search-section">
-            <form [formGroup]="searchForm" (ngSubmit)="searchUser()">
-                <input type="text" formControlName="Search" class="form-control" placeholder="Enter Keyword">
-                <button class="clearbtn" (click)="onClearSearch()" *ngIf="searchClear"><i class="bi bi-x"></i></button>
-                <button class="btn btn-outline-secondary search" type="submit"><i class="bi bi-search"></i></button>
-              </form>
-          </div>
-        </div>
-      </div>
-      <hr>
-    </div>
     <div class="col-md-12">
-      <table class="table table-striped properties-table">
-        <thead class="mb-3">
-          <th>Name</th>
-          <th>Description</th>
-          <th>Created By</th>
-          <th>Date Added</th>
-          <th>Actions</th>
-        </thead>
-        <tbody>
-          <tr
-            *ngFor="let at of allAttributes | paginate: { itemsPerPage: attributeFilter.PerPage, currentPage: PageNo, totalItems: totalItem }">
-            <td>{{at.Title}}</td>
-            <td>{{at.AdditionalInformation | slice:0:20}}...</td>
-            <td>{{at.CreatedOn}}</td>
-            <td>{{at.AddedBy}}</td>
-            <td class="dropdown">
-              <i class="bi bi-three-dots-vertical dropdown-toggle" data-bs-toggle="dropdown"></i>
-              <ul class="dropdown-menu">
-                <li><a class="dropdown-item" href="">Edit</a></li>
-                <li><a class="dropdown-item" href="#">View</a></li>
-              </ul>
-            </td>
-          </tr>
-  
-        </tbody>
-      </table>
-    </div>
-    <div class="col-md-12 pegination">
-      <pagination-controls [autoHide]="true" (pageChange)="onPageChange($event)"></pagination-controls>
+      <app-datatable-list [pageTitle]="'Attributes'"
+      [tableHeaderTitle]="tableHead"
+      [tableBodyData]="allAttributes" 
+      [totalCount]="totalItem"
+      [perPage]="attributeFilter.PerPage"
+      [filterChecked]="false"
+      (searchTextGet)="getSearch($event)"
+      (pageNo)="pageChange($event)">
+    </app-datatable-list>
     </div>
   </div>
   

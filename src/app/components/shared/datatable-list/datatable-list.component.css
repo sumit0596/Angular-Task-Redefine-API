@@ -1,0 +1,17 @@
+table th {
+    font-size: 0.9rem;
+    padding: 0.5rem;
+}
+
+.properties-table th:nth-child(6),
+.properties-table th:nth-child(7),
+.properties-table td:nth-child(6),
+.properties-table td:nth-child(7){
+    text-align: center;
+}
+.status>span{
+    background: #0d6efd33;
+    padding: 0.5rem;
+    border-radius: 100px;
+    font-size: 0.8rem;
+}

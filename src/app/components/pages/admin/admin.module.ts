@@ -39,6 +39,8 @@ import { IncentiveSectionComponent } from './pages/incentive-section/incentive-s
 import { IncentiveListComponent } from './pages/incentive-section/incentive-list/incentive-list.component';
 import { IncentiveCreateComponent } from './pages/incentive-section/incentive-create/incentive-create.component';
 import { MatRadioModule } from '@angular/material/radio';
+import { DatatableListComponent } from '../../shared/datatable-list/datatable-list.component';
+import { InternationPropertiesListComponent } from './pages/international-section/internation-properties-list/internation-properties-list.component';
 
 const adminRoutes: Routes = [
   {
@@ -54,6 +56,7 @@ const adminRoutes: Routes = [
       { path: 'create-unit', component: UnitSectionComponent },
       { path: 'manage-incentives', component: IncentiveListComponent },
       { path: 'create-incentives', component: IncentiveCreateComponent },
+      { path: 'manage-international-properties', component: InternationPropertiesListComponent },
       {
         path: 'unit-create',
         children: [
@@ -76,7 +79,17 @@ const adminRoutes: Routes = [
     PropertyFeaturesComponent,
     PropertyCertificationComponent,
     PeopertyConfirmComponent,
-    ManageAttributesComponent, UnitListComponent, UnitDetailsComponent, UnitSectionComponent, UnitFeatureComponent, UnitMediaComponent, IncentiveSectionComponent, IncentiveListComponent, IncentiveCreateComponent],
+    ManageAttributesComponent, 
+    UnitListComponent, 
+    UnitDetailsComponent, 
+    UnitSectionComponent, 
+    UnitFeatureComponent, 
+    UnitMediaComponent, 
+    IncentiveSectionComponent, 
+    IncentiveListComponent, 
+    IncentiveCreateComponent, 
+    DatatableListComponent, 
+    InternationPropertiesListComponent],
   imports: [
     ReactiveFormsModule,
     RouterModule,

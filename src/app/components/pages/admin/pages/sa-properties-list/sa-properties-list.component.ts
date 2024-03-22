@@ -1,13 +1,11 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { DropdownListService } from 'src/app/components/services/dropdown-list.service';
 import { PropertiesService } from 'src/app/components/services/properties.service';
-import * as XLSX from '../../../../../../../node_modules/xlsx';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
 import { NgxSpinnerService } from 'ngx-spinner';
+import { ApiServicesService } from 'src/app/components/services/api-services.service';
 
 @Component({
   selector: 'app-sa-properties-list',
@@ -18,15 +16,37 @@ export class SaPropertiesListComponent implements OnInit {
 
   @ViewChild('closeButton') closeButton!: ElementRef;
 
+  tableHead: any = [
+    {
+      'colId': 'BuildingCode',
+      'colVal': 'Property Code',
+    },
+    {
+      'colId': 'PropertyName',
+      'colVal': 'Name',
+    },
+    {
+      'colId': 'SectorName',
+      'colVal': 'Sector',
+    },
+    {
+      'colId': 'Address',
+      'colVal': 'Address'
+    },
+    {
+      'colId': 'IsFeatured',
+      'colVal': 'Featured'
+    },
+    {
+      'colId': 'PropertyStatus',
+      'colVal': 'Status'
+    }
+  ]
+
+
   propertyList: any[] = [];
-  PageNo: any = 1;
-  totalItem: any;
-  searchClear: boolean | undefined;
-  searchText: any;
-
-
-  sectorList: any[] = []
-  sectorSelect: any;
+  dropdownList: any = [];
+  totalItem!: number;
 
   errorMessage: string = '';
 
@@ -43,24 +63,20 @@ export class SaPropertiesListComponent implements OnInit {
     SortBy: '',
     SortOrder: '',
     HoldingCompanyId: '',
-    CompletionType: ''
+    CompletionType: '',
+    Type: '1'
   }
 
-  IsFeatured: any;
-
-  checked: boolean = true;
-
   constructor(private pl: PropertiesService,
-    private sectors: DropdownListService,
     private router: Router,
     private toastr: ToastrService,
-    private spinner: NgxSpinnerService,
-    private modalService: NgbModal) {
+    private dw: ApiServicesService,
+    private spinner: NgxSpinnerService) {
     localStorage.removeItem('PropertyId');
   }
 
   ngOnInit() {
-    this.getSectorList();
+    this.getDropDown();
     this.spinner.show();
     setTimeout(() => {
       this.spinner.hide();
@@ -76,87 +92,67 @@ export class SaPropertiesListComponent implements OnInit {
     })
   }
 
-
-  getSectorList() {
-    this.sectors.sectorList().subscribe((sector: any) => {
-      this.sectorList = sector.data
+  getDropDown() {
+    this.dw.getValues().subscribe((val: any) => {
+      this.dropdownList = val[0].data;
     })
   }
 
-  searchForm = new FormGroup({
-    Search: new FormControl('')
-  })
+  getSearch(search: any) {
+    this.propertyfilter.Search = search.Search
+    this.propertyfilter.PerPage = 'all';
+    this.getPropertyList(this.propertyfilter);
+  }
+
+  getSelection(sector: any) {
+    console.log(sector);
+    this.propertyfilter.SectorId = sector.SectorId
+    this.ngOnInit();
+  }
+
+  pageChange(pageNo: number) {
+    this.propertyfilter.PageNo = pageNo
+    this.ngOnInit();
+  }
+
+  featureToggle(e: any) {
+    const formData = new FormData();
+    formData.append('IsFeatured', e.status)
+    formData.append('Type', this.propertyfilter.Type)
+    this.setPropertyFeatureStatus(e.id.PropertyId, formData);
+  }
+
+  getEditById(id: any) {
+    localStorage.setItem('PropertyId', id);
+    this.router.navigate(['admin/create-properties']);
+  }
+
+  getViewById(id: any, page: any) {
+    localStorage.setItem('PropertyId', id);
+    this.router.navigate(['admin/view-property'], { queryParams: { pageData: JSON.stringify(page) } });
+  }
+
+  getDelById(id: any) {
+
+  }
 
 
-  filterForm = new FormGroup({
-    RoleId: new FormControl('')
-  })
+  setPropertyFeatureStatus(pid: number, formData: FormData) {
+    this.pl.propertyFeatureChange(pid, formData).subscribe({
+      next: (st: any) => {
+        st.status === 'success' ? (this.getPropertyList(this.propertyfilter), this.toastr.success(st.message)) : null;
+      }, error: (error: HttpErrorResponse) => {
+        this.toastr.error(error.error.message)
+        this.getPropertyList(this.propertyfilter)
+      }
+    })
+  }
+
 
   mdaForm = new FormGroup({
     BuildingCode: new FormControl('')
   })
 
-  onPageChange(e: number) {
-    this.PageNo = e;
-    this.propertyfilter.PageNo = this.PageNo;
-    this.ngOnInit()
-  }
-
-  onClearSearch() {
-    this.searchForm.get('Search')?.setValue('');
-    this.propertyfilter.Search = '';
-    this.getPropertyList(this.propertyfilter);
-    this.searchClear = false;
-    this.ngOnInit()
-  }
-
-  filterSection() {
-    const roleVal = this.filterForm.value
-    Object.values(roleVal).forEach((val: any) => {
-      this.propertyfilter.SectorId = val
-    })
-
-    this.ngOnInit()
-  }
-
-  clearSectorSelect() {
-    this.sectorSelect = ''
-    this.propertyfilter.SectorId = '';
-    this.ngOnInit()
-  }
-
-
-  itemSelected(e: any) {
-    // console.log(e)
-  }
-
-  fileName = "All Properties.xlsx";
-
-  exportData() {
-    setTimeout(() => {
-
-      const ws: XLSX.WorkSheet = XLSX.utils.json_to_sheet(this.propertyList);
-
-      const wb: XLSX.WorkBook = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
-      XLSX.writeFile(wb, this.fileName);
-
-      this.sectorSelect.PageNo = this.PageNo;
-      this.ngOnInit()
-    }, 1000);
-  }
-
-  searchUser() {
-    this.searchText = this.searchForm.value;
-
-    this.propertyfilter.Search = this.searchText['Search'];
-    this.propertyfilter.PerPage = 'all';
-    if (this.searchText) {
-      this.searchClear = true;
-    }
-    this.PageNo = 1;
-    this.ngOnInit()
-  }
 
   modalClose() {
     var modalBackdrop = document.querySelector('.modal-backdrop.fade.show');
@@ -185,40 +181,5 @@ export class SaPropertiesListComponent implements OnInit {
     })
 
   }
-
-
-  editSection(pageId: any) {
-    localStorage.setItem('PropertyId', pageId);
-
-    this.router.navigate(['admin/create-properties']);
-
-  }
-
-  viewSection(pageId: any, page: any) {
-    localStorage.setItem('PropertyId', pageId);
-
-    this.router.navigate(['admin/view-property'], { queryParams: { pageData: JSON.stringify(page) } });
-
-  }
-
-  toggleStatus(e: any, propertyId: number) {
-    this.IsFeatured = e === true ? 1 : 0;
-    const formData = new FormData();
-    formData.append('IsFeatured', this.IsFeatured)
-    this.setPropertyFeatureStatus(propertyId, formData);
-  }
-
-
-  setPropertyFeatureStatus(pid: number, formData: FormData) {
-    this.pl.propertyFeatureChange(pid, formData).subscribe({
-      next: (st: any) => {
-        st.status === 'success' ? (this.getPropertyList(this.propertyfilter), this.toastr.success(st.message)) : null;
-      }, error: (error: HttpErrorResponse) => {
-        this.toastr.error(error.error.message)
-        this.getPropertyList(this.propertyfilter)
-      }
-    })
-  }
-
 }
 

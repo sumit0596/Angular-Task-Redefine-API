@@ -16,9 +16,36 @@ export class UnitListComponent {
   @ViewChild('closeButton') closeButton!: ElementRef;
   @ViewChild('closeButton2') closeButton2!: ElementRef;
 
+  tableHead: any = [
+    {
+      'colId': 'NameAndLocation',
+      'colVal': '	Unit Name',
+    },
+    {
+      'colId': 'UnitSize',
+      'colVal': 'Unit Size(sqm)',
+    },
+    {
+      'colId': 'GrossRental',
+      'colVal': 'Gross(R/sqm)',
+    },
+    {
+      'colId': 'BrokerIncentives',
+      'colVal': 'Broker Commission Incentive'
+    },
+    {
+      'colId': 'IncentiveStatus',
+      'colVal': 'Tenant Incentive'
+    },
+    {
+      'colId': 'UnitStatus',
+      'colVal': 'Avaliability'
+    }
+  ]
+
   propertyUnitfilter: any = {
     PageNo: '',
-    PerPage: 'all',
+    PerPage: '',
     Search: '',
     SectorId: '',
     PropertyId: '',
@@ -28,7 +55,7 @@ export class UnitListComponent {
   propertyUnitStatus: any = {
     PropertyId: '',
     Status: '',
-    Units: []
+    Units: ''
   }
 
   brokercommission: any = {
@@ -52,8 +79,6 @@ export class UnitListComponent {
 
   propertyUnitList: any;
   totalItem: any;
-  searchText: any;
-  searchClear: boolean | undefined;
   PageNo: any = 1;
   checked: boolean = true;
   checkedIn: boolean = false;
@@ -115,13 +140,12 @@ export class UnitListComponent {
 
   ngOnInit() {
     this.spinner.show();
+    this.getPropertyUnitList(this.propertyUnitfilter);
 
     setTimeout(() => {
       this.spinner.hide();
     }, 2000);
-    this.getPropertyUnitList(this.propertyUnitfilter);
     this.getIncentivesListing();
-    this.getSearchForm();
     this.getIncentiveForm();
     this.gettenantIncentiveForm();
   }
@@ -129,25 +153,17 @@ export class UnitListComponent {
   getPropertyUnitList(propertyUnitfilter: any) {
     this.propertyUnitfilter.PropertyId = this.propertyId;
     this.pl.propertyUnitList(propertyUnitfilter).subscribe((res: any) => {
-      setTimeout(() => {
-        this.spinner.hide();
-        this.propertyUnitList = res.data.units;
-        this.totalItem = res.data.totalCount;
-        this.propertyUnitfilter.PerPage = 10;
-      }, 2000);
-    
+      this.propertyUnitList = res.data.units;
+      console.log(this.propertyUnitList);
+      
+      this.totalItem = res.data.totalCount;
+      this.propertyUnitfilter.PerPage = 10;
     })
   }
 
   getIncentivesListing() {
     this.dw.incentivesListing().subscribe((list: any) => {
       this.incentiveListing = list.data
-    })
-  }
-
-  getSearchForm() {
-    this.searchForm = this.fb.group({
-      Search: new FormControl('')
     })
   }
 
@@ -165,49 +181,21 @@ export class UnitListComponent {
   }
 
 
-  searchList() {
-    this.searchText = this.searchForm.value;
-    this.propertyUnitfilter.Search = this.searchText.Search
+  getSearch(search: any) {
+    this.propertyUnitfilter.Search = search.Search
     this.propertyUnitfilter.PerPage = 'all';
-
-
-    if (this.searchText) {
-      this.searchClear = true;
-    }
-
-    this.PageNo = 1;
-    this.getPropertyUnitList(this.propertyUnitfilter);
-  }
-
-  onClearSearch() {
-    this.searchClear = false;
-    this.propertyUnitfilter.Search = '';
     this.ngOnInit();
   }
 
-  onPageChange(e: number) {
-    this.PageNo = e;
-    this.propertyUnitfilter.PageNo = this.PageNo;
-    this.ngOnInit()
+  pageChange(pageNo: number) {
+    this.propertyUnitfilter.PageNo = pageNo
+    this.ngOnInit();
   }
 
-
-  exportData() {
-    setTimeout(() => {
-
-      const ws: XLSX.WorkSheet = XLSX.utils.json_to_sheet(this.propertyUnitList);
-
-      const wb: XLSX.WorkBook = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
-      XLSX.writeFile(wb, this.fileName);
-      this.ngOnInit()
-    }, 1000);
-  }
-
-  toggleStatus(e: any, unitId: number) {
-    this.propertyUnitStatus.PropertyId = this.propertyId;
-    this.propertyUnitStatus.Status = e === true ? 1 : 2;
-    this.propertyUnitStatus.Units.push(unitId);
+  featureToggle(e: any) {
+    this.propertyUnitStatus.PropertyId = e.id.PropertyId;
+    this.propertyUnitStatus.Status = e.status === 1 ? 1 : 2;
+    this.propertyUnitStatus.Units= [e.id.PropertyUnitId]
     this.setPropertyStatusChange(this.propertyUnitStatus);
   }
 
@@ -240,7 +228,6 @@ export class UnitListComponent {
     }
 
   }
-
 
   setPropertyStatusChange(getStatusInput: any) {
     this.pl.propertyUnitStatusChange(getStatusInput).subscribe((st: any) => {
@@ -299,7 +286,7 @@ export class UnitListComponent {
     this.tenantIncentive.Units.push(unitId);
     console.log(unitId);
   }
-  
+
 
   incentiveFormSubmit() {
     this.brokercommission.PropertyId = this.propertyId;
@@ -308,11 +295,11 @@ export class UnitListComponent {
     this.setBrokerCommisionUpdate(this.brokercommission)
   }
 
-  tenantIncentiveFormSubmit(){
+  tenantIncentiveFormSubmit() {
     this.tenantIncentive.PropertyId = this.propertyId;
     this.tenantIncentive.Incentives.push(this.tenantIncentiveForm.value.Incentives);
     this.settenantIncentiveUpdate(this.tenantIncentive);
-    
+
   }
 
   setBrokerCommisionUpdate(broker: any) {

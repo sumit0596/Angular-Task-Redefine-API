@@ -9,9 +9,7 @@
                 <button type="button" class="btn btn-primary" (click)="makeUnAvailable()">Make All UnAvailable</button>
             </div>
             <div class="col-md-3 col-12">
-                <button type="button" 
-                class="btn btn-primary" data-bs-toggle="modal"
-                    data-bs-target="#tenantIncentive"
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#tenantIncentive"
                     class="btn btn-primary">Tenant Incentives</button>
             </div>
             <div class="col-md-3 col-12">
@@ -29,7 +27,19 @@
 
 <div class="p-3 card">
 
-    <div class="col-md-12 mt-4">
+    <div class="col-md-12">
+        <app-datatable-list [pageTitle]="'Attributes'"
+        [tableHeaderTitle]="tableHead"
+        [tableBodyData]="propertyUnitList" 
+        [totalCount]="totalItem"
+        [perPage]="propertyUnitfilter.PerPage"
+        [filterChecked]="false"
+        (searchTextGet)="getSearch($event)"
+        (pageNo)="pageChange($event)"
+        (toggleChange)="featureToggle($event)">
+      </app-datatable-list>
+
+    <!-- <div class="col-md-12 mt-4">
         <div class="header-section">
             <h1 class="admin-title">Units Created</h1>
             <div class="d-flex align-items-center gap-3">
@@ -104,7 +114,7 @@
     </div>
     <div class="col-md-12 pegination">
         <pagination-controls [autoHide]="true" (pageChange)="onPageChange($event)"></pagination-controls>
-    </div>
+    </div> -->
 </div>
 
 <div class="modal fade" id="brokerCommission" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -155,7 +165,8 @@
                     <div class="row">
                         <div class="col-md-12 col-12 mb-3">
                             <label class="form-label">Commission Incentive</label>
-                            <ng-select [clearable]="false" [multiple]="true" (change)="itemSelected($event)" formControlName="Incentives">
+                            <ng-select [clearable]="false" [multiple]="true" (change)="itemSelected($event)"
+                                formControlName="Incentives">
                                 <ng-option *ngFor="let listItem of incentiveListing;"
                                     [value]="listItem.Id">{{listItem.Title}}</ng-option>
                             </ng-select>

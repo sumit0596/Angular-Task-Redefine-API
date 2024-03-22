@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
+import { NgxSpinnerService } from 'ngx-spinner';
 import { ApiServicesService } from 'src/app/components/services/api-services.service';
 
 @Component({
@@ -8,65 +9,66 @@ import { ApiServicesService } from 'src/app/components/services/api-services.ser
   styleUrls: ['./manage-attributes.component.css']
 })
 export class ManageAttributesComponent {
-  
-  allAttributes:any;
+
+  tableHead: any = [
+    {
+      'colId': 'Title',
+      'colVal': 'Name',
+    },
+    {
+      'colId': 'AdditionalInformation',
+      'colVal': 'Description',
+    },
+    {
+      'colId': 'AddedBy',
+      'colVal': 'Created By',
+    },
+    {
+      'colId': 'CreatedOn',
+      'colVal': 'Date Added'
+    }
+  ]
+
+  allAttributes: any;
   totalItem: any;
   PageNo: any = 1;
-  searchClear: boolean | undefined;
-  searchText: any;
-  
+
   attributeFilter: any = {
     PageNo: '',
-    PerPage: 'all',
+    PerPage: '',
     Search: '',
     PropertyId: '',
     SortBy: '',
     SortOrder: '',
   }
 
-  constructor(private apiService: ApiServicesService){}
+  constructor(private apiService: ApiServicesService,
+    private spinner: NgxSpinnerService) { }
 
-  ngOnInit(){
-    this.getAttributeList(this.attributeFilter)
+  ngOnInit() {
+    this.spinner.show();
+    setTimeout(() => {
+      this.spinner.hide();
+      this.getAttributeList(this.attributeFilter)
+    }, 2000)
   }
 
-  searchForm = new FormGroup({
-    Search: new FormControl('')
-  })
-
-
-  getAttributeList(attribute:any){
-    this.apiService.attributeList(attribute).subscribe((at:any)=>{
+  getAttributeList(attribute: any) {
+    this.apiService.attributeList(attribute).subscribe((at: any) => {
       this.allAttributes = at.data.attributes
       this.totalItem = at.data.totalCount
       this.attributeFilter.PerPage = 10;
     })
   }
 
-  onPageChange(e: number) {
-    this.PageNo = e;
-    this.attributeFilter.PageNo = this.PageNo;
-    this.ngOnInit()
-  }
-
-  onClearSearch() {
-    this.searchForm.get('Search')?.setValue('');
-    this.attributeFilter.Search = '';
-    this.getAttributeList(this.attributeFilter)
-    this.searchClear = false;
-    this.ngOnInit()
-  }
-
-  searchUser() {
-    this.searchText = this.searchForm.value;
-
-    this.attributeFilter.Search = this.searchText['Search'];
+  getSearch(search: any) {
+    this.attributeFilter.Search = search.Search
     this.attributeFilter.PerPage = 'all';
-    if (this.searchText) {
-      this.searchClear = true;
-    }
-    this.PageNo = 1;
-    this.ngOnInit()
+    this.ngOnInit();
   }
 
+  pageChange(pageNo: number) {
+    this.attributeFilter.PageNo = pageNo
+    this.ngOnInit();
+  }
 }
